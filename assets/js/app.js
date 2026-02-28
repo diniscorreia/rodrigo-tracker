@@ -9,7 +9,6 @@
     // =========================================================================
     const state = {
         authenticated: false,
-        currentUser: null,
         pin: null,
         status: null,
         historyPage: 1,
@@ -29,7 +28,6 @@
 
     async function apiPost(action, body = {}) {
         if (!body.pin) body.pin = state.pin;
-        if (!body.logged_by) body.logged_by = state.currentUser;
         const res = await fetch(`${API}?action=${action}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -45,39 +43,32 @@
     const $$ = (sel) => document.querySelectorAll(sel);
 
     // =========================================================================
-    // PIN Gate
+    // Gear / Admin flow
     // =========================================================================
-    function initPinGate() {
-        // We don't know users yet — just show a loading state, then fetch on first load
-        // But we need the PIN to get status. So show a simple user select with hardcoded
-        // names from the HTML. We'll populate them from the verify_pin response.
-        // For simplicity, start by attempting a status call (no auth needed for GET).
-        apiGet('status').then((res) => {
-            if (res.ok) {
-                renderUserButtons(res.data.authorized_users);
-            }
-        });
+    function handleGearClick() {
+        if (state.authenticated) {
+            openAdminModal();
+        } else {
+            openPinModal();
+        }
     }
 
-    function renderUserButtons(users) {
-        const container = $('#user-select');
-        container.innerHTML = '';
-        users.forEach((name) => {
-            const btn = document.createElement('button');
-            btn.className = 'user-btn';
-            btn.textContent = name;
-            btn.addEventListener('click', () => selectUser(name));
-            container.appendChild(btn);
-        });
+    function openAdminModal() {
+        renderLogButton(state.status.current_week, state.status.today);
+        const overlay = $('#modal-overlay');
+        const modal = $('#modal-admin');
+        overlay.classList.add('active');
+        modal.hidden = false;
     }
 
-    function selectUser(name) {
-        state.currentUser = name;
-        $$('.user-btn').forEach((b) => b.classList.remove('active'));
-        $$('.user-btn').forEach((b) => {
-            if (b.textContent === name) b.classList.add('active');
-        });
-        $('#pin-form').hidden = false;
+    function openPinModal() {
+        const overlay = $('#modal-overlay');
+        const modal = $('#modal-pin');
+        $('#pin-input').value = '';
+        $('#pin-error').hidden = true;
+
+        overlay.classList.add('active');
+        modal.hidden = false;
         $('#pin-input').focus();
     }
 
@@ -99,13 +90,31 @@
 
         state.pin = pin;
         state.authenticated = true;
-        showDashboard();
+        closeModals();
+
+        // Update gear icon and open admin modal
+        $('#gear-btn').classList.add('authenticated');
+        openAdminModal();
     }
 
-    function showDashboard() {
-        $('#pin-gate').hidden = true;
-        $('#dashboard').hidden = false;
-        loadStatus();
+    // =========================================================================
+    // Rules modal
+    // =========================================================================
+    function openRulesModal() {
+        const overlay = $('#modal-overlay');
+        const modal = $('#modal-rules');
+        overlay.classList.add('active');
+        modal.hidden = false;
+    }
+
+    // =========================================================================
+    // History modal
+    // =========================================================================
+    function openHistoryModal() {
+        const overlay = $('#modal-overlay');
+        const modal = $('#modal-history');
+        overlay.classList.add('active');
+        modal.hidden = false;
         loadHistory(1);
     }
 
@@ -121,7 +130,10 @@
         renderCurrentWeek(res.data.current_week, res.data.today);
         renderStreak(res.data.streak);
         renderProjection(res.data.projection);
-        renderLogButton(res.data.current_week, res.data.today);
+
+        if (state.authenticated) {
+            renderLogButton(res.data.current_week, res.data.today);
+        }
     }
 
     // =========================================================================
@@ -131,16 +143,13 @@
         const fill = $('#jar-fill');
         const amount = $('#jar-amount');
 
-        // Format euro
         const formatted = formatEuro(balance);
         amount.textContent = formatted;
 
-        // Classes
         amount.className = '';
         fill.className = '';
         if (balance > 0) {
             amount.classList.add('positive');
-            // Fill 10% base + up to 90% proportional (cap at €15 for visual)
             const pct = Math.min(95, 10 + (balance / 15) * 85);
             fill.style.height = pct + '%';
         } else if (balance < 0) {
@@ -164,33 +173,31 @@
         const countEl = $('#week-count');
         countEl.textContent = `${week.days_logged} / 7 dias`;
 
-        // Build a set of logged dates
         const loggedDates = {};
         week.days.forEach((d) => {
-            loggedDates[d.log_date] = d.logged_by;
+            loggedDates[d.log_date] = d.logged_by || true;
         });
 
-        // ISO day number for today
         const todayDate = new Date(today + 'T00:00:00');
-        const todayDow = todayDate.getDay() === 0 ? 7 : todayDate.getDay(); // 1=Mon, 7=Sun
+        const todayDow = todayDate.getDay() === 0 ? 7 : todayDate.getDay();
 
         const dots = $$('.dot');
         dots.forEach((dot) => {
             const dayNum = parseInt(dot.dataset.day);
             const dateStr = getDateForDayOfWeek(week.start, dayNum);
 
-            // Reset
             dot.className = 'dot';
             const existingUser = dot.querySelector('.dot-user');
             if (existingUser) existingUser.remove();
 
             if (loggedDates[dateStr]) {
                 dot.classList.add('filled');
-                // Show who logged it
-                const userSpan = document.createElement('span');
-                userSpan.className = 'dot-user';
-                userSpan.textContent = loggedDates[dateStr];
-                dot.appendChild(userSpan);
+                if (typeof loggedDates[dateStr] === 'string' && loggedDates[dateStr].length > 0) {
+                    const userSpan = document.createElement('span');
+                    userSpan.className = 'dot-user';
+                    userSpan.textContent = loggedDates[dateStr];
+                    dot.appendChild(userSpan);
+                }
             } else if (dayNum < todayDow) {
                 dot.classList.add('missed');
             } else if (dayNum > todayDow) {
@@ -201,18 +208,22 @@
                 dot.classList.add('today');
             }
 
-            // Click to delete (if filled) or log (if today/past and not future)
+            // Click actions only when authenticated
             dot.onclick = null;
-            if (loggedDates[dateStr]) {
-                dot.onclick = () => confirmDelete(dateStr);
-            } else if (dayNum <= todayDow) {
-                dot.onclick = () => handleLogDay(dateStr);
+            if (state.authenticated) {
+                if (loggedDates[dateStr]) {
+                    dot.onclick = () => confirmDelete(dateStr);
+                } else if (dayNum <= todayDow) {
+                    dot.onclick = () => handleLogDay(dateStr);
+                }
             }
         });
     }
 
     function renderLogButton(week, today) {
         const btn = $('#log-today-btn');
+        if (!btn) return;
+
         const todayLogged = week.days.some((d) => d.log_date === today);
 
         if (todayLogged) {
@@ -233,7 +244,6 @@
         const countEl = $('#streak-count');
         countEl.textContent = streak;
 
-        // Remove existing fire emojis
         const existing = $('#streak-section').querySelector('.streak-fire');
         if (existing) existing.remove();
 
@@ -241,7 +251,7 @@
             countEl.classList.add('on-fire');
             const fire = document.createElement('span');
             fire.className = 'streak-fire';
-            fire.textContent = '🔥';
+            fire.textContent = '\u{1F525}';
             countEl.parentElement.appendChild(fire);
         } else {
             countEl.classList.remove('on-fire');
@@ -302,12 +312,13 @@
     }
 
     function openLogPastModal() {
+        // Hide admin modal, keep overlay
+        $('#modal-admin').hidden = true;
         const overlay = $('#modal-overlay');
         const modal = $('#modal-log-past');
         const input = $('#past-date-input');
         const errEl = $('#past-date-error');
 
-        // Set max to today, min to 7 days ago
         const today = new Date();
         const minDate = new Date();
         minDate.setDate(minDate.getDate() - 7);
@@ -344,6 +355,8 @@
     }
 
     function openWithdrawModal() {
+        // Hide admin modal, keep overlay
+        $('#modal-admin').hidden = true;
         const overlay = $('#modal-overlay');
         const modal = $('#modal-withdraw');
         $('#withdraw-amount').value = '';
@@ -403,7 +416,6 @@
         const container = $('#history-list');
         if (replace) container.innerHTML = '';
 
-        // Show withdrawals at the top (only on first page)
         if (replace && withdrawals.length > 0) {
             const wHeader = document.createElement('h3');
             wHeader.textContent = 'Levantamentos';
@@ -413,18 +425,20 @@
             withdrawals.forEach((w) => {
                 const el = document.createElement('div');
                 el.className = 'history-withdrawal';
+                const noteHtml = w.note
+                    ? `<div class="history-withdrawal-note">${escapeHtml(w.note)}${w.logged_by ? ' — ' + escapeHtml(w.logged_by) : ''}</div>`
+                    : (w.logged_by ? `<div class="history-withdrawal-note">${escapeHtml(w.logged_by)}</div>` : '');
                 el.innerHTML = `
                     <div class="history-withdrawal-header">
                         <span>${formatDate(w.created_at.split('T')[0])}</span>
                         <span class="history-withdrawal-amount">-${formatEuro(w.amount)}</span>
                     </div>
-                    ${w.note ? `<div class="history-withdrawal-note">${escapeHtml(w.note)} — ${escapeHtml(w.logged_by)}</div>` : `<div class="history-withdrawal-note">${escapeHtml(w.logged_by)}</div>`}
+                    ${noteHtml}
                 `;
                 container.appendChild(el);
             });
         }
 
-        // Weeks
         if (weeks.length === 0 && replace) {
             container.innerHTML += '<p class="loading">Ainda sem histórico de semanas completas.</p>';
             return;
@@ -442,10 +456,10 @@
             let detailHtml = '';
             if (week.days && week.days.length > 0) {
                 detailHtml = week.days
-                    .map(
-                        (d) =>
-                            `<div class="history-day"><span>${formatDate(d.log_date)}</span><span class="history-day-who">${escapeHtml(d.logged_by)}</span></div>`
-                    )
+                    .map((d) => {
+                        const who = d.logged_by ? `<span class="history-day-who">${escapeHtml(d.logged_by)}</span>` : '';
+                        return `<div class="history-day"><span>${formatDate(d.log_date)}</span>${who}</div>`;
+                    })
                     .join('');
             } else {
                 detailHtml = '<div class="history-day" style="color: var(--accent-red)">Nenhum dia registado</div>';
@@ -475,8 +489,8 @@
     function formatEuro(amount) {
         const abs = Math.abs(amount);
         const formatted = abs.toFixed(2).replace('.', ',');
-        if (amount < 0) return `-€${formatted}`;
-        return `€${formatted}`;
+        if (amount < 0) return `-\u20AC${formatted}`;
+        return `\u20AC${formatted}`;
     }
 
     function formatDate(dateStr) {
@@ -485,7 +499,7 @@
     }
 
     function formatDateRange(start, end) {
-        return `${formatDate(start)} – ${formatDate(end)}`;
+        return `${formatDate(start)} \u2013 ${formatDate(end)}`;
     }
 
     function formatISODate(date) {
@@ -511,7 +525,12 @@
     // Event Bindings
     // =========================================================================
     function bindEvents() {
-        // PIN gate
+        // Header icons
+        $('#gear-btn').addEventListener('click', handleGearClick);
+        $('#rules-btn').addEventListener('click', openRulesModal);
+        $('#history-btn').addEventListener('click', openHistoryModal);
+
+        // PIN modal
         $('#pin-submit').addEventListener('click', handlePinSubmit);
         $('#pin-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') handlePinSubmit();
@@ -521,6 +540,7 @@
         $('#log-today-btn').addEventListener('click', () => {
             if (!$('#log-today-btn').disabled) {
                 const today = state.status?.today || formatISODate(new Date());
+                closeModals();
                 handleLogDay(today);
             }
         });
@@ -555,11 +575,11 @@
     }
 
     // =========================================================================
-    // Init
+    // Init — public dashboard, no auth needed to view
     // =========================================================================
     function init() {
         bindEvents();
-        initPinGate();
+        loadStatus();
     }
 
     document.addEventListener('DOMContentLoaded', init);

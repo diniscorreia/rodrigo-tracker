@@ -14,22 +14,21 @@
         <header id="header">
             <h1>O Frasco do Rodrigo</h1>
             <p class="subtitle">Ou vai ao ginásio, ou paga.</p>
+            <div class="header-icons">
+                <button id="history-btn" class="icon-btn" title="Histórico">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </button>
+                <button id="rules-btn" class="icon-btn" title="Regras">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                </button>
+                <button id="gear-btn" class="icon-btn" title="Ações">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                </button>
+            </div>
         </header>
 
-        <!-- PIN GATE -->
-        <section id="pin-gate" class="card">
-            <h2>Quem és tu?</h2>
-            <div id="user-select" class="user-buttons"></div>
-            <div id="pin-form" class="pin-form" hidden>
-                <label for="pin-input">PIN</label>
-                <input type="password" id="pin-input" maxlength="6" inputmode="numeric" placeholder="****" autocomplete="off">
-                <button id="pin-submit" class="btn btn-primary">Entrar</button>
-                <p id="pin-error" class="error-text" hidden></p>
-            </div>
-        </section>
-
-        <!-- DASHBOARD (hidden until auth) -->
-        <main id="dashboard" hidden>
+        <!-- DASHBOARD (always visible) -->
+        <main id="dashboard">
 
             <!-- JAR -->
             <section id="jar-section" class="card">
@@ -59,9 +58,6 @@
                     <div class="dot-container"><span class="dot-label">Dom</span><div class="dot" data-day="7"></div></div>
                 </div>
                 <p id="week-count" class="week-count">0 / 7 dias</p>
-                <div class="week-actions">
-                    <button id="log-today-btn" class="btn btn-primary btn-big">Registar Hoje</button>
-                </div>
             </section>
 
             <!-- STREAK -->
@@ -77,25 +73,48 @@
                 <p id="projection-message" class="projection-text"></p>
             </section>
 
-            <!-- ACTIONS -->
-            <section id="actions-section" class="card">
-                <h2>Ações</h2>
+        </main>
+
+        <!-- MODALS -->
+        <div id="modal-overlay" class="modal-overlay">
+            <!-- History modal -->
+            <div id="modal-history" class="modal modal-tall" hidden>
+                <h3>Histórico Semanal</h3>
+                <div id="history-list" class="history-scroll"></div>
+                <div class="modal-buttons">
+                    <button id="load-more-btn" class="btn btn-secondary" hidden>Carregar Mais</button>
+                    <button class="btn btn-secondary modal-cancel">Fechar</button>
+                </div>
+            </div>
+
+            <!-- Admin actions modal -->
+            <div id="modal-admin" class="modal" hidden>
+                <h3>Ações</h3>
                 <div class="action-buttons">
+                    <button id="log-today-btn" class="btn btn-primary btn-big">Registar Hoje</button>
                     <button id="log-past-btn" class="btn btn-secondary">Registar Dia Passado</button>
                     <button id="withdraw-btn" class="btn btn-danger">Levantar Dinheiro</button>
                 </div>
-            </section>
+                <div class="modal-buttons" style="margin-top: 1rem;">
+                    <button class="btn btn-secondary modal-cancel">Fechar</button>
+                </div>
+            </div>
 
-            <!-- HISTORY -->
-            <section id="history-section" class="card">
-                <h2>Histórico Semanal</h2>
-                <div id="history-list"></div>
-                <button id="load-more-btn" class="btn btn-secondary" hidden>Carregar Mais</button>
-            </section>
+            <!-- PIN modal -->
+            <div id="modal-pin" class="modal" hidden>
+                <h3>Introduz o PIN</h3>
+                <label for="pin-input">PIN</label>
+                <input type="password" id="pin-input" maxlength="6" inputmode="numeric" placeholder="****" autocomplete="off">
+                <div class="modal-buttons">
+                    <button class="btn btn-primary" id="pin-submit">Entrar</button>
+                    <button class="btn btn-secondary modal-cancel">Cancelar</button>
+                </div>
+                <p id="pin-error" class="error-text" hidden></p>
+            </div>
 
-            <!-- RULES -->
-            <section id="rules-section" class="card">
-                <h2>As Regras do Frasco</h2>
+            <!-- Rules modal -->
+            <div id="modal-rules" class="modal" hidden>
+                <h3>As Regras do Frasco</h3>
                 <div class="rules-content">
                     <table class="rules-table">
                         <thead>
@@ -115,12 +134,11 @@
                         <p><strong>Início:</strong> Saldo começa em €0,00.</p>
                     </div>
                 </div>
-            </section>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary modal-cancel">Fechar</button>
+                </div>
+            </div>
 
-        </main>
-
-        <!-- MODALS -->
-        <div id="modal-overlay" class="modal-overlay">
             <!-- Log past day modal -->
             <div id="modal-log-past" class="modal" hidden>
                 <h3>Registar Dia Passado</h3>

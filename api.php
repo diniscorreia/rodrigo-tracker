@@ -100,7 +100,7 @@ function handleLogDay(PDO $db): void
 {
     $body = getJsonBody();
     requirePin($db, $body);
-    $user = requireUser($db, $body);
+    $user = trim($body['logged_by'] ?? '');
 
     $date = trim($body['date'] ?? date('Y-m-d'));
     if (!validateDate($date)) {
@@ -153,7 +153,7 @@ function handleWithdraw(PDO $db): void
 {
     $body = getJsonBody();
     requirePin($db, $body);
-    $user = requireUser($db, $body);
+    $user = trim($body['logged_by'] ?? '');
 
     $amount = validateAmount($body['amount'] ?? null);
     $note = trim($body['note'] ?? '');

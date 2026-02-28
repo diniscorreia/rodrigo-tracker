@@ -11,6 +11,10 @@
     padding: 0;
 }
 
+[hidden] {
+    display: none !important;
+}
+
 :root {
     --bg-primary: #1a1a2e;
     --bg-secondary: #16213e;
@@ -86,6 +90,7 @@ h3 {
 #header {
     text-align: center;
     padding: 2rem 1rem 1rem;
+    position: relative;
 }
 
 #header h1 {
@@ -103,6 +108,36 @@ h3 {
     font-style: italic;
 }
 
+.header-icons {
+    position: absolute;
+    top: 1.5rem;
+    right: 0;
+    display: flex;
+    gap: 0.25rem;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.4rem;
+    border-radius: 50%;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+#gear-btn.authenticated {
+    color: var(--accent-gold);
+}
+
 /* ---------- Cards ---------- */
 
 .card {
@@ -113,81 +148,14 @@ h3 {
     box-shadow: var(--shadow);
 }
 
-/* ---------- PIN Gate ---------- */
+/* ---------- Admin Modal ---------- */
 
-#pin-gate {
-    text-align: center;
+#modal-admin .action-buttons {
+    flex-direction: column;
 }
 
-#pin-gate h2 {
-    font-size: 1.2rem;
-    text-transform: none;
-    letter-spacing: 0;
-    color: var(--text-primary);
-}
-
-.user-buttons {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
-}
-
-.user-btn {
-    background: var(--bg-secondary);
-    border: 2px solid var(--text-muted);
-    color: var(--text-primary);
-    font-family: var(--font);
-    font-size: 0.95rem;
-    font-weight: 600;
-    padding: 0.6rem 1.2rem;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.user-btn:hover {
-    border-color: var(--accent-blue);
-    background: var(--bg-card);
-}
-
-.user-btn.active {
-    border-color: var(--accent-gold);
-    background: rgba(245, 197, 24, 0.15);
-    color: var(--accent-gold);
-}
-
-.pin-form {
-    margin-top: 1rem;
-}
-
-.pin-form label {
-    display: block;
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-bottom: 0.25rem;
-}
-
-.pin-form input {
-    display: block;
-    width: 140px;
-    margin: 0 auto 0.75rem;
-    background: var(--bg-secondary);
-    border: 2px solid var(--text-muted);
-    border-radius: var(--radius-sm);
-    color: var(--text-primary);
-    font-family: var(--font);
-    font-size: 1.5rem;
-    text-align: center;
-    padding: 0.5rem;
-    letter-spacing: 4px;
-    outline: none;
-    transition: border-color 0.2s;
-}
-
-.pin-form input:focus {
-    border-color: var(--accent-gold);
+#modal-admin .action-buttons .btn {
+    min-width: auto;
 }
 
 /* ---------- Buttons ---------- */
@@ -462,13 +430,6 @@ h3 {
     font-size: 1.2rem;
     font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 1rem;
-}
-
-.week-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
 }
 
 /* ---------- Streak ---------- */
@@ -747,6 +708,32 @@ h3 {
 
 .modal input:focus {
     border-color: var(--accent-gold);
+}
+
+#modal-pin input {
+    text-align: center;
+    font-size: 1.5rem;
+    letter-spacing: 4px;
+    width: 160px;
+    margin: 0 auto;
+}
+
+#modal-rules {
+    max-width: 440px;
+}
+
+.modal-tall {
+    max-width: 480px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.history-scroll {
+    flex: 1;
+    overflow-y: auto;
+    margin: 0.5rem 0;
+    padding-right: 0.25rem;
 }
 
 .modal-buttons {
