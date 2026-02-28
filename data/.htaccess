@@ -1,0 +1,6 @@
+# Deny all access to this directory
+Require all denied
+
+# Fallback for older Apache
+Order deny,allow
+Deny from all

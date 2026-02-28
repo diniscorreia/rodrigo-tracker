@@ -1,0 +1,20 @@
+# Database (auto-created on first run)
+data/rodrigo.db
+data/rodrigo.db-wal
+data/rodrigo.db-shm
+
+# Rate limit files
+data/rate_*.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Claude Code
+.claude/
