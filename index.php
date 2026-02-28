@@ -120,7 +120,7 @@
         </main>
 
         <!-- MODALS -->
-        <div id="modal-overlay" class="modal-overlay" hidden>
+        <div id="modal-overlay" class="modal-overlay">
             <!-- Log past day modal -->
             <div id="modal-log-past" class="modal" hidden>
                 <h3>Registar Dia Passado</h3>

@@ -699,11 +699,15 @@ h3 {
     inset: 0;
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(4px);
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     z-index: 100;
     padding: 1rem;
+}
+
+.modal-overlay.active {
+    display: flex;
 }
 
 .modal {
@@ -713,6 +717,8 @@ h3 {
     width: 100%;
     max-width: 380px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 101;
 }
 
 .modal label {

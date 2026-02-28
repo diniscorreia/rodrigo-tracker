@@ -288,7 +288,7 @@
         const modal = $('#modal-delete');
         $('#delete-date-label').textContent = formatDate(date);
 
-        overlay.hidden = false;
+        overlay.classList.add('active');
         modal.hidden = false;
 
         $('#delete-confirm').onclick = async () => {
@@ -316,7 +316,7 @@
         input.value = '';
         errEl.hidden = true;
 
-        overlay.hidden = false;
+        overlay.classList.add('active');
         modal.hidden = false;
     }
 
@@ -350,7 +350,7 @@
         $('#withdraw-note').value = '';
         $('#withdraw-error').hidden = true;
 
-        overlay.hidden = false;
+        overlay.classList.add('active');
         modal.hidden = false;
         $('#withdraw-amount').focus();
     }
@@ -380,7 +380,7 @@
     }
 
     function closeModals() {
-        $('#modal-overlay').hidden = true;
+        $('#modal-overlay').classList.remove('active');
         $$('.modal').forEach((m) => (m.hidden = true));
     }
 
