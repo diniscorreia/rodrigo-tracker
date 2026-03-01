@@ -146,20 +146,20 @@
         const formatted = formatEuro(balance);
         amount.textContent = formatted;
 
-        amount.className = '';
-        fill.className = '';
+        amount.className = 'jar-amount';
+        fill.setAttribute('class', 'ring-progress');
         if (balance > 0) {
             amount.classList.add('positive');
             const pct = Math.min(95, 10 + (balance / 15) * 85);
-            fill.style.height = pct + '%';
+            fill.style.setProperty('--ring-pct', pct);
         } else if (balance < 0) {
             amount.classList.add('negative');
             fill.classList.add('negative');
             const pct = Math.min(95, 10 + (Math.abs(balance) / 15) * 85);
-            fill.style.height = pct + '%';
+            fill.style.setProperty('--ring-pct', pct);
         } else {
             amount.classList.add('zero');
-            fill.style.height = '5%';
+            fill.style.setProperty('--ring-pct', 3);
         }
     }
 

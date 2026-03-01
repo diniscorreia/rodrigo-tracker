@@ -4,16 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>O Frasco do Rodrigo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
-    <meta name="theme-color" content="#1a1a2e">
+    <meta name="theme-color" content="#0a0a0f">
 </head>
 <body>
     <div id="app">
 
         <!-- HEADER -->
         <header id="header">
-            <h1>O Frasco do Rodrigo</h1>
-            <p class="subtitle">Ou vai ao ginásio, ou paga.</p>
+            <div class="header-left">
+                <img src="assets/img/logo-bp.svg" alt="Balola's Programme" class="header-logo">
+            </div>
+            <div class="header-center">
+                <h1>O Frasco do Rodrigo</h1>
+                <p class="subtitle">Ou vai ao ginásio, ou paga.</p>
+            </div>
             <div class="header-icons">
                 <button id="history-btn" class="icon-btn" title="Histórico">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -30,16 +38,24 @@
         <!-- DASHBOARD (always visible) -->
         <main id="dashboard">
 
-            <!-- JAR -->
+            <!-- JAR / PROGRESS RING -->
             <section id="jar-section" class="card">
                 <div id="jar-container">
-                    <div id="jar">
-                        <div id="jar-rim"></div>
-                        <div id="jar-body">
-                            <div id="jar-fill"></div>
-                            <div id="jar-amount">€0,00</div>
-                        </div>
-                    </div>
+                    <svg id="jar" class="progress-ring" viewBox="0 0 200 200">
+                        <defs>
+                            <linearGradient id="ring-grad-pos" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#00e676"/>
+                                <stop offset="100%" stop-color="#69f0ae"/>
+                            </linearGradient>
+                            <linearGradient id="ring-grad-neg" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#ff5252"/>
+                                <stop offset="100%" stop-color="#ff867c"/>
+                            </linearGradient>
+                        </defs>
+                        <circle class="ring-bg" cx="100" cy="100" r="85" />
+                        <circle id="jar-fill" class="ring-progress" cx="100" cy="100" r="85" />
+                    </svg>
+                    <div id="jar-amount">€0,00</div>
                 </div>
                 <div id="jar-label">Saldo do Frasco</div>
             </section>
