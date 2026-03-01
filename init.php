@@ -390,12 +390,20 @@ function calculateProjection(float $currentBalance, int $currentStreak, array $c
     $projectedBalance = round($projectedBalance, 2);
     $formattedAmount = number_format(abs($projectedBalance), 2, ',', '.');
 
-    if ($avgDaysPerWeek >= 5) {
-        $message = "Se o Rodrigo mantiver este ritmo, o frasco terá {$formattedAmount}\u{00a0}€ até 30 de Maio!";
-    } elseif ($avgDaysPerWeek >= 4) {
-        $message = "A este ritmo, o Rodrigo fica a zeros. Tem de fazer mais!";
+    $ptMonths = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+                 'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    $endFormatted = $endDate->format('j') . ' de ' . $ptMonths[(int)$endDate->format('n') - 1];
+
+    if ($projectedBalance > 0) {
+        $message = $avgDaysPerWeek >= 5
+            ? "Bom ritmo! O frasco terá {$formattedAmount}\u{00a0}€ em {$endFormatted}."
+            : "A este ritmo, o frasco terá {$formattedAmount}\u{00a0}€ em {$endFormatted}.";
+    } elseif ($projectedBalance == 0.0) {
+        $message = "A este ritmo, o Rodrigo fica a zeros em {$endFormatted}. Tem de fazer mais!";
     } else {
-        $message = "A este ritmo, o Rodrigo vai DEVER {$formattedAmount}\u{00a0}€ até 30 de Maio. Vergonha.";
+        $message = $avgDaysPerWeek >= 4
+            ? "A este ritmo, o Rodrigo ainda vai a dever {$formattedAmount}\u{00a0}€ em {$endFormatted}."
+            : "A este ritmo, o Rodrigo vai a dever {$formattedAmount}\u{00a0}€ em {$endFormatted}. Vergonha!";
     }
 
     return [
