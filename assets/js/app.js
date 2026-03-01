@@ -135,10 +135,11 @@
         state.status = res.data;
 
         renderJar(res.data.balance);
-        renderCurrentWeek(res.data.current_week, res.data.today);
+        const clientToday = formatISODate(new Date());
+        renderCurrentWeek(res.data.current_week, clientToday);
         renderStreak(res.data.streak);
         renderProjection(res.data.projection);
-        renderFab(res.data.current_week, res.data.today);
+        renderFab(res.data.current_week, clientToday);
     }
 
     // =========================================================================
@@ -240,8 +241,7 @@
     }
 
     function logToday() {
-        const today = state.status?.today || formatISODate(new Date());
-        handleLogDay(today);
+        handleLogDay(formatISODate(new Date()));
     }
 
     // =========================================================================
