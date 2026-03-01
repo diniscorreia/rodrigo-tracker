@@ -313,10 +313,12 @@
         const errEl = $('#past-date-error');
 
         const today = new Date();
-        const minDate = new Date();
-        minDate.setDate(minDate.getDate() - 7);
+        const dow = today.getDay(); // 0=Sun, 1=Mon … 6=Sat
+        const daysFromMonday = dow === 0 ? 6 : dow - 1;
+        const monday = new Date(today);
+        monday.setDate(today.getDate() - daysFromMonday);
         input.max = formatISODate(today);
-        input.min = formatISODate(minDate);
+        input.min = formatISODate(monday);
         input.value = '';
         errEl.hidden = true;
 

@@ -136,8 +136,8 @@ function validateDate(string $date): bool
     $parts = explode('-', $date);
     if (!checkdate((int)$parts[1], (int)$parts[2], (int)$parts[0])) return false;
     if ($date > date('Y-m-d')) return false;
-    $sevenDaysAgo = (new DateTime('-7 days'))->format('Y-m-d');
-    if ($date < $sevenDaysAgo) return false;
+    $currentMonday = getWeekMonday(date('Y-m-d'));
+    if ($date < $currentMonday) return false;
     return true;
 }
 
