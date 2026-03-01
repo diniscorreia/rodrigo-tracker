@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>O Frasco do Rodrigo</title>
+    <title>O Rodrigo Foi Treinar?</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@
                 <img src="assets/img/logo-bp.svg" alt="Balola's Programme" class="header-logo">
             </div>
             <div class="header-center">
-                <h1>O Frasco do Rodrigo</h1>
+                <h1>O Rodrigo Foi Treinar?</h1>
                 <p class="subtitle">Ou vai ao ginásio, ou paga.</p>
             </div>
             <div class="header-icons">
@@ -40,8 +40,8 @@
 
             <!-- BALANCE -->
             <section id="jar-section" class="card">
-                <div id="jar-amount" class="jar-amount zero">€0,00</div>
-                <div id="jar-label">Saldo do Frasco</div>
+                <div id="jar-label">Saldo</div>
+                <div id="jar-amount" class="jar-amount zero">0,00 €</div>
             </section>
 
             <!-- CURRENT WEEK -->
@@ -117,7 +117,7 @@
                 <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
                 <h3>Introduz o PIN</h3>
                 <label for="pin-input">PIN</label>
-                <input type="password" id="pin-input" maxlength="6" inputmode="numeric" placeholder="****" autocomplete="off">
+                <input type="password" id="pin-input" maxlength="6" inputmode="numeric" placeholder="****" autocomplete="off" data-1p-ignore="true" data-lpignore="true" data-form-type="other">
                 <div class="modal-buttons">
                     <button class="btn btn-primary" id="pin-submit">Entrar</button>
                 </div>

@@ -1,6 +1,6 @@
 <?php
 /**
- * O Frasco do Rodrigo — Database initialization, helpers, balance engine
+ * O Rodrigo Foi Treinar? — Database initialization, helpers, balance engine
  */
 
 declare(strict_types=1);
@@ -52,7 +52,6 @@ function initDatabase(): PDO
         $db->prepare("INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)")
            ->execute(['pin_hash', $hash]);
         $db->exec("INSERT OR IGNORE INTO settings (key, value) VALUES ('challenge_end_date', '2025-05-30')");
-        $db->exec("INSERT OR IGNORE INTO settings (key, value) VALUES ('authorized_users', 'Dinis,Balola,Edu')");
     }
 
     return $db;
@@ -68,12 +67,6 @@ function getSetting(PDO $db, string $key): ?string
     $stmt->execute([$key]);
     $val = $stmt->fetchColumn();
     return $val === false ? null : $val;
-}
-
-function getAuthorizedUsers(PDO $db): array
-{
-    $raw = getSetting($db, 'authorized_users') ?? '';
-    return array_filter(array_map('trim', explode(',', $raw)));
 }
 
 // ---------------------------------------------------------------------------
@@ -96,16 +89,6 @@ function requirePin(PDO $db, array $body): void
     if (!verifyPin($db, $pin)) {
         jsonError('PIN incorreto.', 401);
     }
-}
-
-function requireUser(PDO $db, array $body): string
-{
-    $user = trim($body['logged_by'] ?? '');
-    $users = getAuthorizedUsers($db);
-    if (!in_array($user, $users, true)) {
-        jsonError('Utilizador não autorizado.', 403);
-    }
-    return $user;
 }
 
 // ---------------------------------------------------------------------------
@@ -406,11 +389,11 @@ function calculateProjection(float $currentBalance, int $currentStreak, array $c
     $formattedAmount = number_format(abs($projectedBalance), 2, ',', '.');
 
     if ($avgDaysPerWeek >= 5) {
-        $message = "Se o Rodrigo mantiver este ritmo, o frasco terá €{$formattedAmount} até 30 de Maio!";
+        $message = "Se o Rodrigo mantiver este ritmo, o frasco terá {$formattedAmount}\u{00a0}€ até 30 de Maio!";
     } elseif ($avgDaysPerWeek >= 4) {
         $message = "A este ritmo, o Rodrigo fica a zeros. Tem de fazer mais!";
     } else {
-        $message = "A este ritmo, o Rodrigo vai DEVER €{$formattedAmount} até 30 de Maio. Vergonha.";
+        $message = "A este ritmo, o Rodrigo vai DEVER {$formattedAmount}\u{00a0}€ até 30 de Maio. Vergonha.";
     }
 
     return [

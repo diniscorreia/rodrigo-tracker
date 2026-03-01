@@ -320,7 +320,7 @@ h3 {
     font-size: 2.5rem;
     font-weight: 900;
     letter-spacing: -1px;
-    margin-bottom: 0.5rem;
+    margin-top: 0.4rem;
     line-height: 1.2;
 }
 
@@ -454,7 +454,7 @@ h3 {
 
 .dot.today {
     background: transparent;
-    border: 1.5px dashed var(--text-secondary);
+    border: 1.5px solid var(--text-muted);
 }
 
 .dot.today.filled {

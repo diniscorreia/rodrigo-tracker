@@ -1,6 +1,6 @@
 <?php
 /**
- * O Frasco do Rodrigo — API Router
+ * O Rodrigo Foi Treinar? — API Router
  *
  * All endpoints: api.php?action=X
  */
@@ -67,7 +67,6 @@ function handleStatus(PDO $db): void
         'streak'           => $result['streak'],
         'projection'       => $projection,
         'challenge_active' => $today <= $challengeEnd,
-        'authorized_users' => getAuthorizedUsers($db),
         'today'            => $today,
     ]);
 }
@@ -100,7 +99,6 @@ function handleLogDay(PDO $db): void
 {
     $body = getJsonBody();
     requirePin($db, $body);
-    $user = trim($body['logged_by'] ?? '');
 
     $date = trim($body['date'] ?? date('Y-m-d'));
     if (!validateDate($date)) {
@@ -108,8 +106,8 @@ function handleLogDay(PDO $db): void
     }
 
     try {
-        $stmt = $db->prepare("INSERT INTO gym_logs (log_date, logged_by) VALUES (?, ?)");
-        $stmt->execute([$date, $user]);
+        $stmt = $db->prepare("INSERT INTO gym_logs (log_date, logged_by) VALUES (?, '')");
+        $stmt->execute([$date]);
     } catch (PDOException $e) {
         if (str_contains($e->getMessage(), 'UNIQUE constraint')) {
             // Check if it was soft-deleted — if so, restore it
@@ -117,8 +115,8 @@ function handleLogDay(PDO $db): void
             $stmt->execute([$date]);
             $existing = $stmt->fetch();
             if ($existing && $existing['deleted_at'] !== null) {
-                $db->prepare("UPDATE gym_logs SET deleted_at = NULL, logged_by = ? WHERE id = ?")
-                   ->execute([$user, $existing['id']]);
+                $db->prepare("UPDATE gym_logs SET deleted_at = NULL WHERE id = ?")
+                   ->execute([$existing['id']]);
                 jsonMessage("Dia restaurado! Rodrigo foi ao ginásio a {$date}.");
             }
             jsonError('Já existe registo para este dia.', 409);
@@ -153,7 +151,6 @@ function handleWithdraw(PDO $db): void
 {
     $body = getJsonBody();
     requirePin($db, $body);
-    $user = trim($body['logged_by'] ?? '');
 
     $amount = validateAmount($body['amount'] ?? null);
     $note = trim($body['note'] ?? '');
@@ -161,11 +158,11 @@ function handleWithdraw(PDO $db): void
         $note = mb_substr($note, 0, 200);
     }
 
-    $stmt = $db->prepare("INSERT INTO withdrawals (amount, note, logged_by) VALUES (?, ?, ?)");
-    $stmt->execute([$amount, $note, $user]);
+    $stmt = $db->prepare("INSERT INTO withdrawals (amount, note, logged_by) VALUES (?, ?, '')");
+    $stmt->execute([$amount, $note]);
 
     $formatted = number_format($amount, 2, ',', '.');
-    jsonMessage("Levantamento de €{$formatted} registado.");
+    jsonMessage("Levantamento de {$formatted}\u{00a0}€ registado.");
 }
 
 function handleVerifyPin(PDO $db): void
@@ -181,7 +178,5 @@ function handleVerifyPin(PDO $db): void
         jsonError('PIN incorreto.', 401);
     }
 
-    jsonSuccess([
-        'authorized_users' => getAuthorizedUsers($db),
-    ]);
+    jsonSuccess([]);
 }

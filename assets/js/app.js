@@ -482,8 +482,8 @@
     function formatEuro(amount) {
         const abs = Math.abs(amount);
         const formatted = abs.toFixed(2).replace('.', ',');
-        if (amount < 0) return `-\u20AC${formatted}`;
-        return `\u20AC${formatted}`;
+        if (amount < 0) return `-${formatted}\u00a0\u20ac`;
+        return `${formatted}\u00a0\u20ac`;
     }
 
     function formatDate(dateStr) {
