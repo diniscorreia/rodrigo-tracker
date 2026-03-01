@@ -338,7 +338,7 @@ function getCurrentWeek(PDO $db): array
 // Projection
 // ---------------------------------------------------------------------------
 
-function calculateProjection(float $currentBalance, int $currentStreak, array $completedWeeks, string $challengeEndDate): array
+function calculateProjection(float $currentBalance, int $currentStreak, array $completedWeeks, string $challengeEndDate, ?string $challengeName = null, ?string $challengeArticle = null): array
 {
     $today = new DateTime('today');
     $endDate = new DateTime($challengeEndDate);
@@ -390,20 +390,27 @@ function calculateProjection(float $currentBalance, int $currentStreak, array $c
     $projectedBalance = round($projectedBalance, 2);
     $formattedAmount = number_format(abs($projectedBalance), 2, ',', '.');
 
-    $ptMonths = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
-                 'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-    $endFormatted = $endDate->format('j') . ' de ' . $ptMonths[(int)$endDate->format('n') - 1];
+    // Build the target phrase — prefer challenge name over date
+    if ($challengeName !== null && $challengeName !== '') {
+        $article = ($challengeArticle !== null && $challengeArticle !== '') ? $challengeArticle : 'no';
+        $target = "{$article} {$challengeName}";
+    } else {
+        $ptMonths = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+                     'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+        $endFormatted = $endDate->format('j') . ' de ' . $ptMonths[(int)$endDate->format('n') - 1];
+        $target = "em {$endFormatted}";
+    }
 
     if ($projectedBalance > 0) {
         $message = $avgDaysPerWeek >= 5
-            ? "Bom ritmo! O frasco terá {$formattedAmount}\u{00a0}€ em {$endFormatted}."
-            : "A este ritmo, o frasco terá {$formattedAmount}\u{00a0}€ em {$endFormatted}.";
+            ? "Bom ritmo! O frasco terá {$formattedAmount}\u{00a0}€ {$target}."
+            : "A este ritmo, o frasco terá {$formattedAmount}\u{00a0}€ {$target}.";
     } elseif ($projectedBalance == 0.0) {
-        $message = "A este ritmo, o Rodrigo fica a zeros em {$endFormatted}. Tem de fazer mais!";
+        $message = "A este ritmo, o Rodrigo fica a zeros {$target}. Tem de fazer mais!";
     } else {
         $message = $avgDaysPerWeek >= 4
-            ? "A este ritmo, o Rodrigo ainda vai a dever {$formattedAmount}\u{00a0}€ em {$endFormatted}."
-            : "A este ritmo, o Rodrigo vai a dever {$formattedAmount}\u{00a0}€ em {$endFormatted}. Vergonha!";
+            ? "A este ritmo, o Rodrigo ainda vai a dever {$formattedAmount}\u{00a0}€ {$target}."
+            : "A este ritmo, o Rodrigo vai a dever {$formattedAmount}\u{00a0}€ {$target}. Vergonha!";
     }
 
     return [

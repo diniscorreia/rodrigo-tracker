@@ -20,7 +20,7 @@
             </div>
             <div class="header-center">
                 <h1>O Rodrigo Foi Treinar?</h1>
-                <p class="subtitle">Ou vai ao ginásio, ou paga.</p>
+                <p class="subtitle">“Amanhã às 20h00!”</p>
             </div>
             <div class="header-icons">
                 <button id="history-btn" class="icon-btn" title="Histórico">
@@ -42,6 +42,7 @@
             <section id="jar-section" class="card">
                 <div id="jar-label">Saldo</div>
                 <div id="jar-amount" class="jar-amount zero">0,00 €</div>
+                <p id="projection-message" class="projection-text" hidden></p>
             </section>
 
             <!-- CURRENT WEEK -->
@@ -81,11 +82,6 @@
                     <div id="streak-count" class="streak-number">0</div>
                     <div class="streak-label">semanas consecutivas boas</div>
                 </div>
-            </section>
-
-            <!-- PROJECTION -->
-            <section id="projection-section" class="card" hidden>
-                <p id="projection-message" class="projection-text"></p>
             </section>
 
         </main>

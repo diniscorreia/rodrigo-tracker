@@ -48,7 +48,9 @@ function handleStatus(PDO $db): void
 {
     $result = calculateBalance($db);
     $currentWeek = getCurrentWeek($db);
-    $challengeEnd = getSetting($db, 'challenge_end_date') ?? '2025-05-30';
+    $challengeEnd     = getSetting($db, 'challenge_end_date') ?? '2025-05-30';
+    $challengeName    = getSetting($db, 'challenge_name');
+    $challengeArticle = getSetting($db, 'challenge_article');
 
     // For projection, pass completed weeks in chronological order
     $weeksChronological = array_reverse($result['weeks']);
@@ -56,7 +58,9 @@ function handleStatus(PDO $db): void
         $result['balance'],
         $result['streak'],
         $weeksChronological,
-        $challengeEnd
+        $challengeEnd,
+        $challengeName,
+        $challengeArticle
     );
 
     $today = date('Y-m-d');

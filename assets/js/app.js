@@ -255,15 +255,15 @@
     // Projection
     // =========================================================================
     function renderProjection(projection) {
-        const section = $('#projection-section');
         const msgEl = $('#projection-message');
+        if (!msgEl) return;
 
         if (!projection.visible) {
-            section.hidden = true;
+            msgEl.hidden = true;
             return;
         }
 
-        section.hidden = false;
+        msgEl.hidden = false;
         msgEl.textContent = projection.message;
         msgEl.className = 'projection-text';
 
