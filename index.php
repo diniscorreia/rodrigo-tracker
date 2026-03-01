@@ -38,49 +38,48 @@
         <!-- DASHBOARD (always visible) -->
         <main id="dashboard">
 
-            <!-- JAR / PROGRESS RING -->
+            <!-- BALANCE -->
             <section id="jar-section" class="card">
-                <div id="jar-container">
-                    <svg id="jar" class="progress-ring" viewBox="0 0 200 200">
-                        <defs>
-                            <linearGradient id="ring-grad-pos" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#00e676"/>
-                                <stop offset="100%" stop-color="#69f0ae"/>
-                            </linearGradient>
-                            <linearGradient id="ring-grad-neg" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#ff5252"/>
-                                <stop offset="100%" stop-color="#ff867c"/>
-                            </linearGradient>
-                        </defs>
-                        <circle class="ring-bg" cx="100" cy="100" r="85" />
-                        <circle id="jar-fill" class="ring-progress" cx="100" cy="100" r="85" />
-                    </svg>
-                    <div id="jar-amount">€0,00</div>
-                </div>
+                <div id="jar-amount" class="jar-amount zero">€0,00</div>
                 <div id="jar-label">Saldo do Frasco</div>
             </section>
 
             <!-- CURRENT WEEK -->
             <section id="current-week" class="card">
-                <h2>Esta Semana</h2>
+                <div id="week-ring-container">
+                    <svg id="week-ring" class="week-progress-ring" viewBox="0 0 200 200">
+                        <defs>
+                            <linearGradient id="week-grad-low" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#ff9800"/>
+                                <stop offset="100%" stop-color="#ffca28"/>
+                            </linearGradient>
+                            <linearGradient id="week-grad-good" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#00e676"/>
+                                <stop offset="100%" stop-color="#69f0ae"/>
+                            </linearGradient>
+                        </defs>
+                        <circle class="ring-bg" cx="100" cy="100" r="85" />
+                        <circle id="week-ring-fill" class="week-ring-progress" cx="100" cy="100" r="85" />
+                    </svg>
+                    <div id="week-ring-label">0 vezes<span class="week-ring-sublabel">esta semana</span></div>
+                </div>
                 <div id="week-dates" class="week-dates"></div>
                 <div id="week-dots" class="week-dots">
-                    <div class="dot-container"><span class="dot-label">Seg</span><div class="dot" data-day="1"></div></div>
-                    <div class="dot-container"><span class="dot-label">Ter</span><div class="dot" data-day="2"></div></div>
-                    <div class="dot-container"><span class="dot-label">Qua</span><div class="dot" data-day="3"></div></div>
-                    <div class="dot-container"><span class="dot-label">Qui</span><div class="dot" data-day="4"></div></div>
-                    <div class="dot-container"><span class="dot-label">Sex</span><div class="dot" data-day="5"></div></div>
-                    <div class="dot-container"><span class="dot-label">Sáb</span><div class="dot" data-day="6"></div></div>
-                    <div class="dot-container"><span class="dot-label">Dom</span><div class="dot" data-day="7"></div></div>
+                    <div class="dot-container"><div class="dot" data-day="1"></div><span class="dot-label">Seg</span></div>
+                    <div class="dot-container"><div class="dot" data-day="2"></div><span class="dot-label">Ter</span></div>
+                    <div class="dot-container"><div class="dot" data-day="3"></div><span class="dot-label">Qua</span></div>
+                    <div class="dot-container"><div class="dot" data-day="4"></div><span class="dot-label">Qui</span></div>
+                    <div class="dot-container"><div class="dot" data-day="5"></div><span class="dot-label">Sex</span></div>
+                    <div class="dot-container"><div class="dot" data-day="6"></div><span class="dot-label">Sáb</span></div>
+                    <div class="dot-container"><div class="dot" data-day="7"></div><span class="dot-label">Dom</span></div>
                 </div>
-                <p id="week-count" class="week-count">0 / 7 dias</p>
             </section>
 
             <!-- STREAK -->
             <section id="streak-section" class="card">
                 <div class="streak-display">
-                    <span id="streak-count" class="streak-number">0</span>
-                    <span class="streak-label">semanas consecutivas boas</span>
+                    <div id="streak-count" class="streak-number">0</div>
+                    <div class="streak-label">semanas consecutivas boas</div>
                 </div>
             </section>
 
@@ -95,41 +94,39 @@
         <div id="modal-overlay" class="modal-overlay">
             <!-- History modal -->
             <div id="modal-history" class="modal modal-tall" hidden>
+                <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
                 <h3>Histórico Semanal</h3>
                 <div id="history-list" class="history-scroll"></div>
                 <div class="modal-buttons">
                     <button id="load-more-btn" class="btn btn-secondary" hidden>Carregar Mais</button>
-                    <button class="btn btn-secondary modal-cancel">Fechar</button>
                 </div>
             </div>
 
             <!-- Admin actions modal -->
             <div id="modal-admin" class="modal" hidden>
+                <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
                 <h3>Ações</h3>
                 <div class="action-buttons">
-                    <button id="log-today-btn" class="btn btn-primary btn-big">Registar Hoje</button>
                     <button id="log-past-btn" class="btn btn-secondary">Registar Dia Passado</button>
                     <button id="withdraw-btn" class="btn btn-danger">Levantar Dinheiro</button>
-                </div>
-                <div class="modal-buttons" style="margin-top: 1rem;">
-                    <button class="btn btn-secondary modal-cancel">Fechar</button>
                 </div>
             </div>
 
             <!-- PIN modal -->
             <div id="modal-pin" class="modal" hidden>
+                <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
                 <h3>Introduz o PIN</h3>
                 <label for="pin-input">PIN</label>
                 <input type="password" id="pin-input" maxlength="6" inputmode="numeric" placeholder="****" autocomplete="off">
                 <div class="modal-buttons">
                     <button class="btn btn-primary" id="pin-submit">Entrar</button>
-                    <button class="btn btn-secondary modal-cancel">Cancelar</button>
                 </div>
                 <p id="pin-error" class="error-text" hidden></p>
             </div>
 
             <!-- Rules modal -->
             <div id="modal-rules" class="modal" hidden>
+                <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
                 <h3>As Regras do Frasco</h3>
                 <div class="rules-content">
                     <table class="rules-table">
@@ -150,25 +147,23 @@
                         <p><strong>Início:</strong> Saldo começa em €0,00.</p>
                     </div>
                 </div>
-                <div class="modal-buttons">
-                    <button class="btn btn-secondary modal-cancel">Fechar</button>
-                </div>
             </div>
 
             <!-- Log past day modal -->
             <div id="modal-log-past" class="modal" hidden>
+                <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
                 <h3>Registar Dia Passado</h3>
                 <label for="past-date-input">Data</label>
                 <input type="date" id="past-date-input">
                 <div class="modal-buttons">
                     <button class="btn btn-primary" id="past-date-submit">Registar</button>
-                    <button class="btn btn-secondary modal-cancel">Cancelar</button>
                 </div>
                 <p id="past-date-error" class="error-text" hidden></p>
             </div>
 
             <!-- Withdraw modal -->
             <div id="modal-withdraw" class="modal" hidden>
+                <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
                 <h3>Levantar Dinheiro</h3>
                 <label for="withdraw-amount">Valor (€)</label>
                 <input type="number" id="withdraw-amount" min="0.01" max="100" step="0.01" placeholder="0,00">
@@ -176,21 +171,25 @@
                 <input type="text" id="withdraw-note" maxlength="200" placeholder="Ex: Rodrigo pagou almoço">
                 <div class="modal-buttons">
                     <button class="btn btn-danger" id="withdraw-submit">Levantar</button>
-                    <button class="btn btn-secondary modal-cancel">Cancelar</button>
                 </div>
                 <p id="withdraw-error" class="error-text" hidden></p>
             </div>
 
             <!-- Confirm delete modal -->
             <div id="modal-delete" class="modal" hidden>
+                <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
                 <h3>Remover Registo</h3>
                 <p>Tens a certeza que queres remover o registo de <strong id="delete-date-label"></strong>?</p>
                 <div class="modal-buttons">
                     <button class="btn btn-danger" id="delete-confirm">Sim, Remover</button>
-                    <button class="btn btn-secondary modal-cancel">Cancelar</button>
                 </div>
             </div>
         </div>
+
+        <!-- FAB: Log Today -->
+        <button id="fab-log" class="fab" title="Registar hoje">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
 
     </div>
 

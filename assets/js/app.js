@@ -10,6 +10,7 @@
     const state = {
         authenticated: false,
         pin: null,
+        pinCallback: null,
         status: null,
         historyPage: 1,
         historyTotal: 1,
@@ -54,14 +55,14 @@
     }
 
     function openAdminModal() {
-        renderLogButton(state.status.current_week, state.status.today);
         const overlay = $('#modal-overlay');
         const modal = $('#modal-admin');
         overlay.classList.add('active');
         modal.hidden = false;
     }
 
-    function openPinModal() {
+    function openPinModal(onSuccess) {
+        state.pinCallback = onSuccess || null;
         const overlay = $('#modal-overlay');
         const modal = $('#modal-pin');
         $('#pin-input').value = '';
@@ -92,9 +93,16 @@
         state.authenticated = true;
         closeModals();
 
-        // Update gear icon and open admin modal
         $('#gear-btn').classList.add('authenticated');
-        openAdminModal();
+
+        // Execute callback if one was set (e.g. from FAB)
+        if (state.pinCallback) {
+            const cb = state.pinCallback;
+            state.pinCallback = null;
+            cb();
+        } else {
+            openAdminModal();
+        }
     }
 
     // =========================================================================
@@ -130,36 +138,22 @@
         renderCurrentWeek(res.data.current_week, res.data.today);
         renderStreak(res.data.streak);
         renderProjection(res.data.projection);
-
-        if (state.authenticated) {
-            renderLogButton(res.data.current_week, res.data.today);
-        }
+        renderFab(res.data.current_week, res.data.today);
     }
 
     // =========================================================================
     // Jar
     // =========================================================================
     function renderJar(balance) {
-        const fill = $('#jar-fill');
         const amount = $('#jar-amount');
-
-        const formatted = formatEuro(balance);
-        amount.textContent = formatted;
-
+        amount.textContent = formatEuro(balance);
         amount.className = 'jar-amount';
-        fill.setAttribute('class', 'ring-progress');
         if (balance > 0) {
             amount.classList.add('positive');
-            const pct = Math.min(95, 10 + (balance / 15) * 85);
-            fill.style.setProperty('--ring-pct', pct);
         } else if (balance < 0) {
             amount.classList.add('negative');
-            fill.classList.add('negative');
-            const pct = Math.min(95, 10 + (Math.abs(balance) / 15) * 85);
-            fill.style.setProperty('--ring-pct', pct);
         } else {
             amount.classList.add('zero');
-            fill.style.setProperty('--ring-pct', 3);
         }
     }
 
@@ -170,8 +164,13 @@
         const datesEl = $('#week-dates');
         datesEl.textContent = formatDateRange(week.start, week.end);
 
-        const countEl = $('#week-count');
-        countEl.textContent = `${week.days_logged} / 7 dias`;
+        // Update week progress ring
+        const ringFill = $('#week-ring-fill');
+        const ringLabel = $('#week-ring-label');
+        const pct = (week.days_logged / 7) * 100;
+        ringFill.style.setProperty('--week-ring-pct', pct);
+        ringFill.setAttribute('class', 'week-ring-progress' + (week.days_logged >= 4 ? ' good' : ''));
+        ringLabel.innerHTML = `${week.days_logged} vez${week.days_logged !== 1 ? 'es' : ''}<span class="week-ring-sublabel">esta semana</span>`;
 
         const loggedDates = {};
         week.days.forEach((d) => {
@@ -187,17 +186,9 @@
             const dateStr = getDateForDayOfWeek(week.start, dayNum);
 
             dot.className = 'dot';
-            const existingUser = dot.querySelector('.dot-user');
-            if (existingUser) existingUser.remove();
 
             if (loggedDates[dateStr]) {
                 dot.classList.add('filled');
-                if (typeof loggedDates[dateStr] === 'string' && loggedDates[dateStr].length > 0) {
-                    const userSpan = document.createElement('span');
-                    userSpan.className = 'dot-user';
-                    userSpan.textContent = loggedDates[dateStr];
-                    dot.appendChild(userSpan);
-                }
             } else if (dayNum < todayDow) {
                 dot.classList.add('missed');
             } else if (dayNum > todayDow) {
@@ -220,42 +211,44 @@
         });
     }
 
-    function renderLogButton(week, today) {
-        const btn = $('#log-today-btn');
-        if (!btn) return;
+    function renderFab(week, today) {
+        const fab = $('#fab-log');
+        if (!fab) return;
 
         const todayLogged = week.days.some((d) => d.log_date === today);
 
         if (todayLogged) {
-            btn.textContent = 'Já registado hoje!';
-            btn.className = 'btn btn-logged btn-big';
-            btn.disabled = true;
+            fab.classList.add('logged');
+            fab.title = 'Já registado hoje';
+            fab.disabled = true;
         } else {
-            btn.textContent = 'Registar Hoje';
-            btn.className = 'btn btn-primary btn-big';
-            btn.disabled = false;
+            fab.classList.remove('logged');
+            fab.title = 'Registar hoje';
+            fab.disabled = false;
         }
+    }
+
+    function handleFabClick() {
+        const fab = $('#fab-log');
+        if (fab.disabled) return;
+
+        if (state.authenticated) {
+            logToday();
+        } else {
+            openPinModal(logToday);
+        }
+    }
+
+    function logToday() {
+        const today = state.status?.today || formatISODate(new Date());
+        handleLogDay(today);
     }
 
     // =========================================================================
     // Streak
     // =========================================================================
     function renderStreak(streak) {
-        const countEl = $('#streak-count');
-        countEl.textContent = streak;
-
-        const existing = $('#streak-section').querySelector('.streak-fire');
-        if (existing) existing.remove();
-
-        if (streak >= 4) {
-            countEl.classList.add('on-fire');
-            const fire = document.createElement('span');
-            fire.className = 'streak-fire';
-            fire.textContent = '\u{1F525}';
-            countEl.parentElement.appendChild(fire);
-        } else {
-            countEl.classList.remove('on-fire');
-        }
+        $('#streak-count').textContent = streak;
     }
 
     // =========================================================================
@@ -536,14 +529,8 @@
             if (e.key === 'Enter') handlePinSubmit();
         });
 
-        // Log today
-        $('#log-today-btn').addEventListener('click', () => {
-            if (!$('#log-today-btn').disabled) {
-                const today = state.status?.today || formatISODate(new Date());
-                closeModals();
-                handleLogDay(today);
-            }
-        });
+        // FAB — Log today
+        $('#fab-log').addEventListener('click', handleFabClick);
 
         // Log past day
         $('#log-past-btn').addEventListener('click', openLogPastModal);
