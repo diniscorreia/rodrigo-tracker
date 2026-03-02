@@ -1,9 +1,20 @@
-<!DOCTYPE html>
+<?php
+$_proto   = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$_baseUrl = $_proto . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
+?><!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>O Rodrigo Foi Treinar?</title>
+    <!-- Open Graph -->
+    <meta property="og:type"        content="website">
+    <meta property="og:title"       content="O Rodrigo Foi Treinar?">
+    <meta property="og:description" content="Tracker de treinos do Rodrigo — saldo semanal e progresso">
+    <meta property="og:image"       content="<?= htmlspecialchars($_baseUrl) ?>/og-image.php">
+    <meta property="og:image:width"  content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card"       content="summary_large_image">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">

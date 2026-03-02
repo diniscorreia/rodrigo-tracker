@@ -500,12 +500,12 @@ h3 {
 
 .projection-text.positive {
     color: var(--accent-green);
-    opacity: 0.75;
+    opacity: 0.6;
 }
 
 .projection-text.negative {
     color: var(--accent-red);
-    opacity: 0.75;
+    opacity: 0.6;
 }
 
 /* ---------- Settings modal ---------- */
