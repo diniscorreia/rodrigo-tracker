@@ -508,6 +508,51 @@ h3 {
     opacity: 0.85;
 }
 
+/* ---------- Settings modal ---------- */
+
+.settings-section {
+    margin-bottom: 0;
+}
+
+.settings-section-title {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin: 0 0 0.85rem;
+}
+
+.settings-hint {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 400;
+    margin-left: 0.25rem;
+}
+
+.settings-divider {
+    border: none;
+    border-top: 1px solid var(--bg-surface);
+    margin: 1.25rem 0;
+}
+
+.success-text {
+    font-size: 0.8rem;
+    color: var(--accent-green);
+    margin-top: 0.5rem;
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--bg-surface);
+}
+
+.btn-ghost:hover {
+    color: var(--text-primary);
+    border-color: var(--text-muted);
+}
+
 /* ---------- Actions ---------- */
 
 .action-buttons {

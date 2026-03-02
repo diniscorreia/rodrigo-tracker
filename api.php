@@ -28,10 +28,12 @@ try {
     switch ($action) {
         case 'status':     requireMethod('GET');  handleStatus($db);     break;
         case 'history':    requireMethod('GET');  handleHistory($db);    break;
-        case 'log_day':    requireMethod('POST'); handleLogDay($db);     break;
-        case 'delete_day': requireMethod('POST'); handleDeleteDay($db);  break;
-        case 'withdraw':   requireMethod('POST'); handleWithdraw($db);   break;
-        case 'verify_pin': requireMethod('POST'); handleVerifyPin($db);  break;
+        case 'log_day':         requireMethod('POST'); handleLogDay($db);         break;
+        case 'delete_day':      requireMethod('POST'); handleDeleteDay($db);      break;
+        case 'withdraw':        requireMethod('POST'); handleWithdraw($db);       break;
+        case 'verify_pin':      requireMethod('POST'); handleVerifyPin($db);      break;
+        case 'update_settings': requireMethod('POST'); handleUpdateSettings($db); break;
+        case 'change_pin':      requireMethod('POST'); handleChangePin($db);      break;
         default:           jsonError('Ação desconhecida.', 404);         break;
     }
 } catch (PDOException $e) {
@@ -71,6 +73,11 @@ function handleStatus(PDO $db): void
         'streak'           => $result['streak'],
         'projection'       => $projection,
         'challenge_active' => $today <= $challengeEnd,
+        'challenge'        => [
+            'end_date' => $challengeEnd,
+            'name'     => $challengeName ?? '',
+            'article'  => $challengeArticle ?? '',
+        ],
         'today'            => $today,
     ]);
 }
@@ -183,4 +190,46 @@ function handleVerifyPin(PDO $db): void
     }
 
     jsonSuccess([]);
+}
+
+function handleUpdateSettings(PDO $db): void
+{
+    $body = getJsonBody();
+    requirePin($db, $body);
+
+    $allowed = ['challenge_end_date', 'challenge_name', 'challenge_article'];
+    foreach ($allowed as $key) {
+        if (!array_key_exists($key, $body)) continue;
+        $value = trim((string)($body[$key] ?? ''));
+
+        if ($key === 'challenge_end_date' && $value !== '') {
+            $parts = explode('-', $value);
+            if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $value) ||
+                !checkdate((int)$parts[1], (int)$parts[2], (int)$parts[0])) {
+                jsonError('Data de fim inválida.', 400);
+            }
+        }
+
+        $db->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)")
+           ->execute([$key, $value]);
+    }
+
+    jsonMessage('Definições guardadas.');
+}
+
+function handleChangePin(PDO $db): void
+{
+    $body = getJsonBody();
+    requirePin($db, $body);
+
+    $newPin = trim((string)($body['new_pin'] ?? ''));
+    if (!ctype_digit($newPin) || strlen($newPin) < 4 || strlen($newPin) > 6) {
+        jsonError('O novo PIN deve ter 4 a 6 dígitos numéricos.', 400);
+    }
+
+    $hash = password_hash($newPin, PASSWORD_BCRYPT, ['cost' => 12]);
+    $db->prepare("UPDATE settings SET value = ? WHERE key = 'pin_hash'")
+       ->execute([$hash]);
+
+    jsonMessage('PIN alterado com sucesso.');
 }

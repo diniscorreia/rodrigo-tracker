@@ -140,6 +140,7 @@
         renderStreak(res.data.streak);
         renderProjection(res.data.projection);
         renderFab(res.data.current_week, clientToday);
+        state.challenge = res.data.challenge;
     }
 
     // =========================================================================
@@ -392,6 +393,44 @@
         $$('.modal').forEach((m) => (m.hidden = true));
     }
 
+    function openSettingsModal() {
+        $('#modal-admin').hidden = true;
+        const ch = state.challenge ?? {};
+        $('#settings-challenge-name').value    = ch.name     ?? '';
+        $('#settings-challenge-article').value = ch.article  ?? '';
+        $('#settings-challenge-end').value     = ch.end_date ?? '';
+        $('#settings-new-pin').value = '';
+        $('#settings-msg').hidden     = true;
+        $('#settings-pin-msg').hidden = true;
+        $('#modal-settings').hidden = false;
+    }
+
+    async function submitSettings() {
+        const msgEl = $('#settings-msg');
+        msgEl.hidden = true;
+        const res = await apiPost('update_settings', {
+            challenge_end_date: $('#settings-challenge-end').value,
+            challenge_name:     $('#settings-challenge-name').value.trim(),
+            challenge_article:  $('#settings-challenge-article').value.trim(),
+        });
+        msgEl.textContent = res.ok ? res.message : res.error;
+        msgEl.className   = res.ok ? 'success-text' : 'error-text';
+        msgEl.hidden = false;
+        if (res.ok) loadStatus();
+    }
+
+    async function submitChangePin() {
+        const msgEl = $('#settings-pin-msg');
+        msgEl.hidden = true;
+        const res = await apiPost('change_pin', {
+            new_pin: $('#settings-new-pin').value.trim(),
+        });
+        msgEl.textContent = res.ok ? res.message : res.error;
+        msgEl.className   = res.ok ? 'success-text' : 'error-text';
+        msgEl.hidden = false;
+        if (res.ok) $('#settings-new-pin').value = '';
+    }
+
     // =========================================================================
     // History
     // =========================================================================
@@ -541,6 +580,11 @@
         // Withdraw
         $('#withdraw-btn').addEventListener('click', openWithdrawModal);
         $('#withdraw-submit').addEventListener('click', submitWithdraw);
+
+        // Settings
+        $('#settings-btn').addEventListener('click', openSettingsModal);
+        $('#settings-save').addEventListener('click', submitSettings);
+        $('#settings-pin-save').addEventListener('click', submitChangePin);
 
         // Modal cancels
         $$('.modal-cancel').forEach((btn) => {

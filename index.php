@@ -106,6 +106,42 @@
                     <button id="log-past-btn" class="btn btn-secondary">Registar Dia Passado</button>
                     <button id="withdraw-btn" class="btn btn-danger">Levantar Dinheiro</button>
                 </div>
+                <hr class="settings-divider">
+                <div class="action-buttons">
+                    <button id="settings-btn" class="btn btn-ghost">Definições</button>
+                </div>
+            </div>
+
+            <!-- Settings modal -->
+            <div id="modal-settings" class="modal" hidden>
+                <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                <h3>Definições</h3>
+
+                <div class="settings-section">
+                    <h4 class="settings-section-title">Desafio</h4>
+                    <label for="settings-challenge-name">Nome do desafio</label>
+                    <input type="text" id="settings-challenge-name" maxlength="60" placeholder="West Games">
+                    <label for="settings-challenge-article">Artigo <span class="settings-hint">nos, no, na, nas…</span></label>
+                    <input type="text" id="settings-challenge-article" maxlength="10" placeholder="nos">
+                    <label for="settings-challenge-end">Data de fim</label>
+                    <input type="date" id="settings-challenge-end">
+                    <div class="modal-buttons">
+                        <button class="btn btn-primary" id="settings-save">Guardar</button>
+                    </div>
+                    <p id="settings-msg" class="success-text" hidden></p>
+                </div>
+
+                <hr class="settings-divider">
+
+                <div class="settings-section">
+                    <h4 class="settings-section-title">Mudar PIN</h4>
+                    <label for="settings-new-pin">Novo PIN</label>
+                    <input type="password" id="settings-new-pin" maxlength="6" inputmode="numeric" placeholder="****" autocomplete="new-password" data-1p-ignore="true" data-lpignore="true" data-form-type="other">
+                    <div class="modal-buttons">
+                        <button class="btn btn-secondary" id="settings-pin-save">Mudar PIN</button>
+                    </div>
+                    <p id="settings-pin-msg" class="success-text" hidden></p>
+                </div>
             </div>
 
             <!-- PIN modal -->
