@@ -255,7 +255,7 @@ h3 {
 .btn-secondary {
     background: var(--bg-surface);
     color: var(--text-primary);
-    border: 1px solid var(--border);
+    border-color: var(--border);
 }
 
 .btn-secondary:hover:not(:disabled) {
@@ -542,27 +542,6 @@ h3 {
     margin-top: 0.5rem;
 }
 
-.btn-amber {
-    background: transparent;
-    color: var(--accent-gold);
-    border-color: var(--accent-gold);
-}
-
-.btn-amber:hover:not(:disabled) {
-    background: rgba(255, 179, 0, 0.08);
-}
-
-.btn-ghost {
-    background: transparent;
-    color: var(--text-primary);
-    border-color: var(--border);
-}
-
-.btn-ghost:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.2);
-}
-
 /* ---------- Actions ---------- */
 
 .action-buttons {
@@ -750,7 +729,6 @@ h3 {
     background: var(--bg-card);
     border-radius: var(--radius);
     padding: 1.5rem;
-    padding-top: 2.5rem;
     width: 100%;
     max-width: 380px;
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
@@ -759,10 +737,19 @@ h3 {
     z-index: 101;
 }
 
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+}
+
+.modal-header h3 {
+    margin-bottom: 0;
+}
+
 .modal-close {
-    position: absolute;
-    top: 0.75rem;
-    right: 0.75rem;
+    flex-shrink: 0;
     background: none;
     border: none;
     color: var(--text-muted);
@@ -773,7 +760,6 @@ h3 {
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
-    z-index: 2;
 }
 
 .modal-close:hover {

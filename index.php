@@ -90,8 +90,10 @@
         <div id="modal-overlay" class="modal-overlay">
             <!-- History modal -->
             <div id="modal-history" class="modal modal-tall" hidden>
-                <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-                <h3>Histórico</h3>
+                <div class="modal-header">
+                    <h3>Histórico</h3>
+                    <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
                 <div id="history-list" class="history-scroll"></div>
                 <div class="modal-buttons">
                     <button id="load-more-btn" class="btn btn-secondary" hidden>Carregar Mais</button>
@@ -100,19 +102,23 @@
 
             <!-- Admin actions modal -->
             <div id="modal-admin" class="modal" hidden>
-                <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-                <h3>Acções</h3>
+                <div class="modal-header">
+                    <h3>Acções</h3>
+                    <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
                 <div class="action-buttons">
-                    <button id="log-past-btn" class="btn btn-primary">Registar Dia Passado</button>
-                    <button id="withdraw-btn" class="btn btn-amber">Levantar Dinheiro</button>
-                    <button id="settings-btn" class="btn btn-ghost">Definições</button>
+                    <button id="log-past-btn" class="btn btn-secondary">Registar dia passado</button>
+                    <button id="withdraw-btn" class="btn btn-secondary">Levantar dinheiro</button>
+                    <button id="settings-btn" class="btn btn-secondary">Definições</button>
                 </div>
             </div>
 
             <!-- Settings modal -->
             <div id="modal-settings" class="modal" hidden>
-                <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-                <h3>Definições</h3>
+                <div class="modal-header">
+                    <h3>Definições</h3>
+                    <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
 
                 <div class="settings-section">
                     <h4 class="settings-section-title">Desafio</h4>
@@ -143,8 +149,10 @@
 
             <!-- PIN modal -->
             <div id="modal-pin" class="modal" hidden>
-                <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-                <h3>Introduz o PIN</h3>
+                <div class="modal-header">
+                    <h3>Introduz o PIN</h3>
+                    <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
                 <input type="password" id="pin-input" maxlength="6" inputmode="numeric" placeholder="****" autocomplete="off" data-1p-ignore="true" data-lpignore="true" data-form-type="other">
                 <div class="modal-buttons">
                     <button class="btn btn-primary" id="pin-submit">Entrar</button>
@@ -154,8 +162,10 @@
 
             <!-- Rules modal -->
             <div id="modal-rules" class="modal" hidden>
-                <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-                <h3>Regras</h3>
+                <div class="modal-header">
+                    <h3>Regras</h3>
+                    <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
                 <div class="rules-content">
                     <table class="rules-table">
                         <thead>
@@ -179,8 +189,10 @@
 
             <!-- Log past day modal -->
             <div id="modal-log-past" class="modal" hidden>
-                <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-                <h3>Registar dias passados</h3>
+                <div class="modal-header">
+                    <h3>Registar dias passados</h3>
+                    <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
                 <label for="past-date-input">Data</label>
                 <input type="date" id="past-date-input">
                 <div class="modal-buttons">
@@ -191,8 +203,10 @@
 
             <!-- Withdraw modal -->
             <div id="modal-withdraw" class="modal" hidden>
-                <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-                <h3>Levantar dinheiro</h3>
+                <div class="modal-header">
+                    <h3>Levantar dinheiro</h3>
+                    <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
                 <label for="withdraw-amount">Valor (€)</label>
                 <input type="number" id="withdraw-amount" min="0.01" max="100" step="0.01" placeholder="0,00">
                 <label for="withdraw-note">Nota (opcional)</label>
@@ -205,8 +219,10 @@
 
             <!-- Confirm delete modal -->
             <div id="modal-delete" class="modal" hidden>
-                <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-                <h3>Remover Registo</h3>
+                <div class="modal-header">
+                    <h3>Remover Registo</h3>
+                    <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
                 <p>Tens a certeza que queres remover o registo de <strong id="delete-date-label"></strong>?</p>
                 <div class="modal-buttons">
                     <button class="btn btn-danger" id="delete-confirm">Sim, Remover</button>
