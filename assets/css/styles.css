@@ -414,6 +414,7 @@ h3 {
     font-size: 0.7rem;
     color: var(--text-muted);
     margin-bottom: 0.5rem;
+    min-height: 1rem;
 }
 
 .week-dots {
