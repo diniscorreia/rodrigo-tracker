@@ -92,13 +92,13 @@ imagefill($im, 0, 0, $cBg);
 
 $cx     = (int)($W / 2);   // 600 — exact horizontal centre
 $cy     = (int)($H / 2);   // 315 — exact vertical centre
-$outerR = 190;
-$innerR = 162;
-$midR   = (int)(($outerR + $innerR) / 2);  // 176 — ring centreline radius
-$capR   = (int)(($outerR - $innerR) / 2);  // 14  — half stroke width
+$outerR = 257;
+$innerR = 223;
+$midR   = (int)(($outerR + $innerR) / 2);  // 240 — ring centreline radius
+$capR   = (int)(($outerR - $innerR) / 2);  // 17  — half stroke width
 
-$outerD = $outerR * 2;   // 380
-$innerD = $innerR * 2;   // 324
+$outerD = $outerR * 2;   // 514
+$innerD = $innerR * 2;   // 446
 
 $sweepDeg = ($daysLogged / 7) * 360.0;
 
