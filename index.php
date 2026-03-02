@@ -172,7 +172,7 @@ $_baseUrl = $_proto . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
                 </div>
                 <input type="password" id="pin-input" maxlength="6" inputmode="numeric" placeholder="****" autocomplete="off" data-1p-ignore="true" data-lpignore="true" data-form-type="other">
                 <div class="modal-buttons">
-                    <button class="btn btn-primary" id="pin-submit">Entrar</button>
+                    <button class="btn btn-primary" id="pin-submit">Confirmar</button>
                 </div>
                 <p id="pin-error" class="error-text" hidden></p>
             </div>

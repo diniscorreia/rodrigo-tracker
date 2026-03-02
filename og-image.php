@@ -92,13 +92,13 @@ imagefill($im, 0, 0, $cBg);
 
 $cx     = (int)($W / 2);   // 600 — exact horizontal centre
 $cy     = (int)($H / 2);   // 315 — exact vertical centre
-$outerR = 257;
-$innerR = 223;
-$midR   = (int)(($outerR + $innerR) / 2);  // 240 — ring centreline radius
-$capR   = (int)(($outerR - $innerR) / 2);  // 17  — half stroke width
+$outerR = 230;
+$innerR = 200;
+$midR   = (int)(($outerR + $innerR) / 2);  // 215 — ring centreline radius
+$capR   = (int)(($outerR - $innerR) / 2);  // 15  — half stroke width
 
-$outerD = $outerR * 2;   // 514
-$innerD = $innerR * 2;   // 446
+$outerD = $outerR * 2;   // 460
+$innerD = $innerR * 2;   // 400
 
 $sweepDeg = ($daysLogged / 7) * 360.0;
 
@@ -134,21 +134,21 @@ $suffix = $daysLogged === 1 ? 'vez' : 'vezes';
 $line1  = $daysLogged . ' ' . $suffix;   // e.g. "1 vez" / "5 vezes"
 $line2  = 'esta semana';
 
-$bbL1   = imagettfbbox(56, 0, $fBlack,   $line1);
+$bbL1   = imagettfbbox(50, 0, $fBlack,   $line1);
 $l1CapH = abs($bbL1[5]);
 
-$bbL2   = imagettfbbox(34, 0, $fRegular, $line2);
+$bbL2   = imagettfbbox(30, 0, $fRegular, $line2);
 $l2CapH = abs($bbL2[5]);
 
-$gap       = 18;
+$gap       = 16;
 $blockH    = $l1CapH + $gap + $l2CapH;
 $blockTopY = $cy - (int)($blockH / 2);
 
 $line1Y = $blockTopY + $l1CapH;
 $line2Y = $line1Y + $gap + $l2CapH;
 
-ogText($im, 56, $fBlack,   $line1, $cx, $line1Y, $cText);
-ogText($im, 34, $fRegular, $line2, $cx, $line2Y, $cSecond);
+ogText($im, 50, $fBlack,   $line1, $cx, $line1Y, $cText);
+ogText($im, 30, $fRegular, $line2, $cx, $line2Y, $cSecond);
 
 // ─── Output ──────────────────────────────────────────────────────────────────
 

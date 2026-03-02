@@ -352,8 +352,8 @@ h3 {
 
 .week-progress-ring {
     display: block;
-    width: 170px;
-    height: 170px;
+    width: 220px;
+    height: 220px;
     transform: rotate(-90deg);
 }
 
@@ -386,7 +386,7 @@ h3 {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 1.4rem;
+    font-size: 2.5rem;
     font-weight: 900;
     color: var(--text-primary);
     white-space: nowrap;
@@ -476,7 +476,7 @@ h3 {
 }
 
 .streak-number {
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 900;
     color: var(--text-primary);
     line-height: 1.1;
@@ -914,7 +914,7 @@ h3 {
 
     .header-logo {
         margin: 0 auto;
-        width: 140px;
+        width: 100px;
     }
 
     .header-center {
@@ -948,15 +948,19 @@ h3 {
 
 @media (max-width: 899px) {
     .week-progress-ring {
-        width: 140px;
-        height: 140px;
+        width: 180px;
+        height: 180px;
     }
 
     #week-ring-label {
-        font-size: 1.25rem;
+        font-size: 2rem;
     }
 
     #jar-amount {
+        font-size: 2rem;
+    }
+
+    .streak-number {
         font-size: 2rem;
     }
 }
