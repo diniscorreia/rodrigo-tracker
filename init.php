@@ -411,14 +411,14 @@ function calculateProjection(float $currentBalance, int $currentStreak, array $c
 
     if ($projectedBalance > 0) {
         $message = $avgDaysPerWeek >= 5
-            ? "Bom ritmo! O frasco terá {$formattedAmount}\u{00a0}€ {$target}."
-            : "A este ritmo, o frasco terá {$formattedAmount}\u{00a0}€ {$target}.";
+            ? "Bom ritmo! O saldo será {$formattedAmount}\u{00a0}€ {$target}."
+            : "A este ritmo, o saldo será {$formattedAmount}\u{00a0}€ {$target}.";
     } elseif ($projectedBalance == 0.0) {
-        $message = "A este ritmo, o Rodrigo fica a zeros {$target}. Tem de fazer mais!";
+        $message = "A este ritmo, fica a zeros {$target}. Tem de fazer mais!";
     } else {
         $message = $avgDaysPerWeek >= 4
-            ? "A este ritmo, o Rodrigo ainda vai a dever {$formattedAmount}\u{00a0}€ {$target}."
-            : "A este ritmo, o Rodrigo vai a dever {$formattedAmount}\u{00a0}€ {$target}. Vergonha!";
+            ? "A este ritmo, ainda vai a dever {$formattedAmount}\u{00a0}€ {$target}. Vergonha!"
+            : "A este ritmo, vai a dever {$formattedAmount}\u{00a0}€ {$target}. Vergonha!";
     }
 
     return [

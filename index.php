@@ -29,7 +29,7 @@
                 <button id="rules-btn" class="icon-btn" title="Regras">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                 </button>
-                <button id="gear-btn" class="icon-btn" title="Ações">
+                <button id="gear-btn" class="icon-btn" title="Acções">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                 </button>
             </div>
@@ -91,7 +91,7 @@
             <!-- History modal -->
             <div id="modal-history" class="modal modal-tall" hidden>
                 <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-                <h3>Histórico Semanal</h3>
+                <h3>Histórico</h3>
                 <div id="history-list" class="history-scroll"></div>
                 <div class="modal-buttons">
                     <button id="load-more-btn" class="btn btn-secondary" hidden>Carregar Mais</button>
@@ -101,7 +101,7 @@
             <!-- Admin actions modal -->
             <div id="modal-admin" class="modal" hidden>
                 <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-                <h3>Ações</h3>
+                <h3>Acções</h3>
                 <div class="action-buttons">
                     <button id="log-past-btn" class="btn btn-secondary">Registar Dia Passado</button>
                     <button id="withdraw-btn" class="btn btn-danger">Levantar Dinheiro</button>
@@ -159,7 +159,7 @@
             <!-- Rules modal -->
             <div id="modal-rules" class="modal" hidden>
                 <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-                <h3>As Regras do Frasco</h3>
+                <h3>Regras</h3>
                 <div class="rules-content">
                     <table class="rules-table">
                         <thead>
@@ -175,8 +175,7 @@
                     <div class="rules-extras">
                         <p><strong>Bónus:</strong> A cada 4 semanas consecutivas boas (5+ dias), +€0,50 extra!</p>
                         <p><strong>Semana:</strong> Segunda a Domingo.</p>
-                        <p><strong>Competição:</strong> CrossFit Lisbon, 5 de Junho de 2025. O desafio termina a 30 de Maio.</p>
-                        <p><strong>Início:</strong> Saldo começa em €0,00.</p>
+                        <p><strong>Início:</strong> Saldo começa em 0,00 €.</p>
                     </div>
                 </div>
             </div>
