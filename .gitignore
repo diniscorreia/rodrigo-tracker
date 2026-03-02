@@ -1,3 +1,6 @@
+# Local config (created manually on each server, never committed)
+config.local.php
+
 # Database (auto-created on first run)
 data/rodrigo.db
 data/rodrigo.db-wal

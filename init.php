@@ -7,13 +7,19 @@ declare(strict_types=1);
 
 date_default_timezone_set('Europe/Lisbon');
 
+// Load server-specific config if present (gitignored, never overwritten by deploys)
+if (file_exists(__DIR__ . '/config.local.php')) {
+    require_once __DIR__ . '/config.local.php';
+}
+
 // ---------------------------------------------------------------------------
 // Database
 // ---------------------------------------------------------------------------
 
 function initDatabase(): PDO
 {
-    $dbPath = getenv('RODRIGO_DB_PATH') ?: __DIR__ . '/data/rodrigo.db';
+    $dbPath = defined('RODRIGO_DB_PATH')  ? RODRIGO_DB_PATH
+            : (getenv('RODRIGO_DB_PATH') ?: __DIR__ . '/data/rodrigo.db');
     $isNew = !file_exists($dbPath);
 
     $db = new PDO('sqlite:' . $dbPath);
@@ -53,7 +59,7 @@ function initDatabase(): PDO
         $hash = password_hash('1234', PASSWORD_BCRYPT, ['cost' => 12]);
         $db->prepare("INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)")
            ->execute(['pin_hash', $hash]);
-        $db->exec("INSERT OR IGNORE INTO settings (key, value) VALUES ('challenge_end_date', '2025-05-30')");
+        $db->exec("INSERT OR IGNORE INTO settings (key, value) VALUES ('challenge_end_date', '2026-05-30')");
         $db->exec("INSERT OR IGNORE INTO settings (key, value) VALUES ('challenge_name', 'West Games')");
         $db->exec("INSERT OR IGNORE INTO settings (key, value) VALUES ('challenge_article', 'nos')");
     }

@@ -1,0 +1,15 @@
+<?php
+/**
+ * Local configuration — copy to config.local.php on each server.
+ * This file is gitignored and will never be overwritten by deployments.
+ */
+
+// ---------------------------------------------------------------------------
+// Database path
+// ---------------------------------------------------------------------------
+// Point to a directory ABOVE the webroot so SQLite is never publicly
+// accessible, regardless of .htaccess. On Dreamhost:
+//   1. SSH in and run: mkdir ~/private
+//   2. Set the path below and save as config.local.php
+//
+// define('RODRIGO_DB_PATH', '/home/username/private/rodrigo.db');
