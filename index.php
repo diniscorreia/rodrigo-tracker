@@ -103,11 +103,8 @@
                 <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
                 <h3>Acções</h3>
                 <div class="action-buttons">
-                    <button id="log-past-btn" class="btn btn-secondary">Registar Dia Passado</button>
-                    <button id="withdraw-btn" class="btn btn-danger">Levantar Dinheiro</button>
-                </div>
-                <hr class="settings-divider">
-                <div class="action-buttons">
+                    <button id="log-past-btn" class="btn btn-primary">Registar Dia Passado</button>
+                    <button id="withdraw-btn" class="btn btn-amber">Levantar Dinheiro</button>
                     <button id="settings-btn" class="btn btn-ghost">Definições</button>
                 </div>
             </div>
@@ -148,7 +145,6 @@
             <div id="modal-pin" class="modal" hidden>
                 <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
                 <h3>Introduz o PIN</h3>
-                <label for="pin-input">PIN</label>
                 <input type="password" id="pin-input" maxlength="6" inputmode="numeric" placeholder="****" autocomplete="off" data-1p-ignore="true" data-lpignore="true" data-form-type="other">
                 <div class="modal-buttons">
                     <button class="btn btn-primary" id="pin-submit">Entrar</button>
@@ -166,14 +162,15 @@
                             <tr><th>Dias/Semana</th><th>Resultado</th></tr>
                         </thead>
                         <tbody>
-                            <tr class="rule-bad"><td>0–3 dias</td><td>-€1,00</td></tr>
-                            <tr class="rule-neutral"><td>4 dias</td><td>€0,00</td></tr>
-                            <tr class="rule-good"><td>5 dias</td><td>+€0,75</td></tr>
-                            <tr class="rule-great"><td>6+ dias</td><td>+€1,00</td></tr>
+                            <tr class="rule-bad"><td>0 dias</td><td>-1,50 €</td></tr>
+                            <tr class="rule-bad"><td>1–3 dias</td><td>-1,00 €</td></tr>
+                            <tr class="rule-neutral"><td>4 dias</td><td>0,00 €</td></tr>
+                            <tr class="rule-good"><td>5 dias</td><td>+0,75 €</td></tr>
+                            <tr class="rule-great"><td>6+ dias</td><td>+1,00 €</td></tr>
                         </tbody>
                     </table>
                     <div class="rules-extras">
-                        <p><strong>Bónus:</strong> A cada 4 semanas consecutivas boas (5+ dias), +€0,50 extra!</p>
+                        <p><strong>Bónus:</strong> A cada 4 semanas consecutivas boas (5+ dias), +1,00 € extra!</p>
                         <p><strong>Semana:</strong> Segunda a Domingo.</p>
                         <p><strong>Início:</strong> Saldo começa em 0,00 €.</p>
                     </div>
@@ -183,7 +180,7 @@
             <!-- Log past day modal -->
             <div id="modal-log-past" class="modal" hidden>
                 <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-                <h3>Registar Dia Passado</h3>
+                <h3>Registar dias passados</h3>
                 <label for="past-date-input">Data</label>
                 <input type="date" id="past-date-input">
                 <div class="modal-buttons">
@@ -195,7 +192,7 @@
             <!-- Withdraw modal -->
             <div id="modal-withdraw" class="modal" hidden>
                 <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-                <h3>Levantar Dinheiro</h3>
+                <h3>Levantar dinheiro</h3>
                 <label for="withdraw-amount">Valor (€)</label>
                 <input type="number" id="withdraw-amount" min="0.01" max="100" step="0.01" placeholder="0,00">
                 <label for="withdraw-note">Nota (opcional)</label>

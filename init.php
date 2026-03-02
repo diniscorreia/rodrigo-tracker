@@ -225,6 +225,7 @@ function getWeekSunday(string $mondayStr): string
 
 function evaluateWeek(int $dayCount): float
 {
+    if ($dayCount === 0) return -1.50;
     if ($dayCount <= 3) return -1.00;
     if ($dayCount === 4) return 0.00;
     if ($dayCount === 5) return 0.75;
@@ -290,7 +291,7 @@ function calculateBalance(PDO $db): array
         // Bonus every 4th consecutive good week
         $bonus = 0.0;
         if ($streak > 0 && $streak % 4 === 0) {
-            $bonus = 0.50;
+            $bonus = 1.00;
             $balance += $bonus;
         }
 
@@ -388,7 +389,7 @@ function calculateProjection(float $currentBalance, int $currentStreak, array $c
         if ($isGoodWeekPace) {
             $projectedStreak++;
             if ($projectedStreak % 4 === 0) {
-                $projectedBalance += 0.50;
+                $projectedBalance += 1.00;
             }
         } else {
             $projectedStreak = 0;

@@ -229,7 +229,7 @@ h3 {
     font-size: 0.85rem;
     font-weight: 700;
     padding: 0.6rem 1.2rem;
-    border: none;
+    border: 1.5px solid transparent;
     border-radius: var(--radius-sm);
     cursor: pointer;
     transition: all 0.2s;
@@ -542,15 +542,25 @@ h3 {
     margin-top: 0.5rem;
 }
 
-.btn-ghost {
+.btn-amber {
     background: transparent;
-    color: var(--text-muted);
-    border: 1px solid var(--bg-surface);
+    color: var(--accent-gold);
+    border-color: var(--accent-gold);
 }
 
-.btn-ghost:hover {
+.btn-amber:hover:not(:disabled) {
+    background: rgba(255, 179, 0, 0.08);
+}
+
+.btn-ghost {
+    background: transparent;
     color: var(--text-primary);
-    border-color: var(--text-muted);
+    border-color: var(--border);
+}
+
+.btn-ghost:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 /* ---------- Actions ---------- */
@@ -804,7 +814,16 @@ h3 {
     font-size: 1.5rem;
     letter-spacing: 4px;
     width: 160px;
-    margin: 0 auto;
+    margin: 1rem auto 0;
+}
+
+#modal-pin .modal-buttons {
+    justify-content: center;
+}
+
+#modal-pin .modal-buttons .btn {
+    flex: none;
+    width: 160px;
 }
 
 #modal-rules {
