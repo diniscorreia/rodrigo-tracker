@@ -134,21 +134,21 @@ $suffix = $daysLogged === 1 ? 'vez' : 'vezes';
 $line1  = $daysLogged . ' ' . $suffix;   // e.g. "1 vez" / "5 vezes"
 $line2  = 'esta semana';
 
-$bbL1   = imagettfbbox(40, 0, $fBlack,   $line1);
+$bbL1   = imagettfbbox(48, 0, $fBlack,   $line1);
 $l1CapH = abs($bbL1[5]);
 
-$bbL2   = imagettfbbox(18, 0, $fRegular, $line2);
+$bbL2   = imagettfbbox(22, 0, $fRegular, $line2);
 $l2CapH = abs($bbL2[5]);
 
-$gap       = 14;
+$gap       = 16;
 $blockH    = $l1CapH + $gap + $l2CapH;
 $blockTopY = $cy - (int)($blockH / 2);
 
 $line1Y = $blockTopY + $l1CapH;
 $line2Y = $line1Y + $gap + $l2CapH;
 
-ogText($im, 40, $fBlack,   $line1, $cx, $line1Y, $cText);
-ogText($im, 18, $fRegular, $line2, $cx, $line2Y, $cSecond);
+ogText($im, 48, $fBlack,   $line1, $cx, $line1Y, $cText);
+ogText($im, 22, $fRegular, $line2, $cx, $line2Y, $cSecond);
 
 // ─── Output ──────────────────────────────────────────────────────────────────
 
