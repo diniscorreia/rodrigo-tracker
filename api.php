@@ -21,10 +21,11 @@ if ($method === 'POST') {
     }
 }
 
-$db = initDatabase();
 $action = $_GET['action'] ?? '';
 
 try {
+    $db = initDatabase();
+
     switch ($action) {
         case 'status':     requireMethod('GET');  handleStatus($db);     break;
         case 'history':    requireMethod('GET');  handleHistory($db);    break;

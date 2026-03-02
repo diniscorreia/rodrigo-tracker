@@ -20,6 +20,13 @@ function initDatabase(): PDO
 {
     $dbPath = defined('RODRIGO_DB_PATH')  ? RODRIGO_DB_PATH
             : (getenv('RODRIGO_DB_PATH') ?: __DIR__ . '/data/rodrigo.db');
+
+    // Ensure the data directory exists (first run on a fresh server)
+    $dbDir = dirname($dbPath);
+    if (!is_dir($dbDir)) {
+        mkdir($dbDir, 0755, true);
+    }
+
     $isNew = !file_exists($dbPath);
 
     $db = new PDO('sqlite:' . $dbPath);
