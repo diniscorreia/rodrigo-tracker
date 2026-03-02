@@ -11,6 +11,8 @@ require_once __DIR__ . '/init.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
+header('Cache-Control: no-store, no-cache, must-revalidate');
+header('Pragma: no-cache');
 
 // CSRF: require JSON content-type on POST
 $method = $_SERVER['REQUEST_METHOD'];

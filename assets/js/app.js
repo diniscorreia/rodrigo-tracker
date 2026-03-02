@@ -395,10 +395,10 @@
 
     function openSettingsModal() {
         $('#modal-admin').hidden = true;
-        const ch = state.challenge ?? {};
-        $('#settings-challenge-name').value    = ch.name     ?? '';
-        $('#settings-challenge-article').value = ch.article  ?? '';
-        $('#settings-challenge-end').value     = ch.end_date ?? '';
+        const ch = state.challenge || {};
+        $('#settings-challenge-name').value    = ch.name     || '';
+        $('#settings-challenge-article').value = ch.article  || '';
+        $('#settings-challenge-end').value     = ch.end_date || '';
         $('#settings-new-pin').value = '';
         $('#settings-msg').hidden     = true;
         $('#settings-pin-msg').hidden = true;

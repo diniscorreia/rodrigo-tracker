@@ -94,8 +94,9 @@ h3 {
     display: flex;
     align-items: center;
     padding: 1rem 0.5rem;
-    gap: 1rem;
 }
+
+#header > * + * { margin-left: 1rem; }
 
 .header-logo {
     width: 160px;
@@ -123,9 +124,10 @@ h3 {
 
 .header-icons {
     display: flex;
-    gap: 0.25rem;
     flex-shrink: 0;
 }
+
+.header-icons > * + * { margin-left: 0.25rem; }
 
 .icon-btn {
     background: none;
@@ -224,7 +226,6 @@ h3 {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.4rem;
     font-family: var(--font);
     font-size: 0.85rem;
     font-weight: 700;
@@ -419,15 +420,17 @@ h3 {
 .week-dots {
     display: flex;
     justify-content: center;
-    gap: 0.75rem;
 }
+
+.week-dots > * + * { margin-left: 0.75rem; }
 
 .dot-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.25rem;
 }
+
+.dot-container > * + * { margin-top: 0.25rem; }
 
 .dot {
     width: 12px;
@@ -546,9 +549,12 @@ h3 {
 
 .action-buttons {
     display: flex;
-    gap: 0.5rem;
     flex-wrap: wrap;
 }
+
+.action-buttons > * + * { margin-left: 0.5rem; }
+
+#modal-admin .action-buttons > * + * { margin-left: 0; margin-top: 0.5rem; }
 
 .action-buttons .btn {
     flex: 1;
@@ -822,9 +828,10 @@ h3 {
 
 .modal-buttons {
     display: flex;
-    gap: 0.5rem;
     margin-top: 1.25rem;
 }
+
+.modal-buttons > * + * { margin-left: 0.5rem; }
 
 .modal-buttons .btn {
     flex: 1;
@@ -900,17 +907,13 @@ h3 {
 
 @media (max-width: 899px) {
     #header {
-        flex-wrap: wrap;
-        justify-content: center;
+        flex-direction: column;
+        align-items: center;
         text-align: center;
-        gap: 0.75rem;
         padding: 1.5rem 0.5rem 0.75rem;
     }
 
-    .header-left {
-        width: 100%;
-        text-align: center;
-    }
+    #header > * + * { margin-left: 0; margin-top: 0.75rem; }
 
     .header-logo {
         margin: 0 auto;
@@ -918,12 +921,12 @@ h3 {
     }
 
     .header-center {
+        flex: none;
         width: 100%;
         text-align: center;
     }
 
     .header-icons {
-        width: 100%;
         justify-content: center;
     }
 
@@ -980,9 +983,7 @@ h3 {
         height: 8px;
     }
 
-    .week-dots {
-        gap: 0.5rem;
-    }
+    .week-dots > * + * { margin-left: 0.5rem; }
 
     .action-buttons {
         flex-direction: column;
