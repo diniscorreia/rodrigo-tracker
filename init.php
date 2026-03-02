@@ -54,6 +54,8 @@ function initDatabase(): PDO
         $db->prepare("INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)")
            ->execute(['pin_hash', $hash]);
         $db->exec("INSERT OR IGNORE INTO settings (key, value) VALUES ('challenge_end_date', '2025-05-30')");
+        $db->exec("INSERT OR IGNORE INTO settings (key, value) VALUES ('challenge_name', 'West Games')");
+        $db->exec("INSERT OR IGNORE INTO settings (key, value) VALUES ('challenge_article', 'nos')");
     }
 
     return $db;
