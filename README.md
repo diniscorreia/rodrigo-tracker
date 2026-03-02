@@ -6,12 +6,13 @@ A personal gym accountability tracker with a monetary jar system. Every week Rod
 
 | Days / Week | Result   |
 |-------------|----------|
-| 0–3 dias    | −1,00 €  |
+| 0 dias      | −1,50 €  |
+| 1–3 dias    | −1,00 €  |
 | 4 dias      | 0,00 €   |
 | 5 dias      | +0,75 €  |
 | 6+ dias     | +1,00 €  |
 
-A streak bonus of +0,50 € applies every 4 consecutive good weeks (5+ days).
+A streak bonus of +1,00 € applies every 4 consecutive good weeks (5+ days).
 
 ## Stack
 
