@@ -370,6 +370,11 @@ function calculateProjection(float $currentBalance, int $currentStreak, array $c
         return ['visible' => false];
     }
 
+    // Need at least one completed week to make a meaningful projection
+    if (empty($completedWeeks)) {
+        return ['visible' => false];
+    }
+
     // Average days per week from completed weeks
     if (!empty($completedWeeks)) {
         $totalDays = array_sum(array_column($completedWeeks, 'day_count'));
