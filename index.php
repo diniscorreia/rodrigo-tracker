@@ -11,7 +11,7 @@ $_baseUrl = $_proto . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
     <meta property="og:type"        content="website">
     <meta property="og:title"       content="O Rodrigo Foi Treinar?">
     <meta property="og:description" content="Tracker de treinos do Rodrigo — saldo semanal e progresso">
-    <meta property="og:image"       content="<?= htmlspecialchars($_baseUrl) ?>/og-image.php">
+    <meta property="og:image"       content="<?= htmlspecialchars($_baseUrl) ?>/og-image.php?d=<?= date('Y-m-d') ?>">
     <meta property="og:image:width"  content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card"       content="summary_large_image">
