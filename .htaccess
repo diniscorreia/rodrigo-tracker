@@ -1,4 +1,13 @@
-# Protect database files
+# ---------------------------------------------------------------------------
+# Database path (production)
+# Uncomment and set to a directory ABOVE the webroot so the file is never
+# served by Apache, regardless of .htaccess. Example Dreamhost path:
+#   SetEnv RODRIGO_DB_PATH /home/username/private/rodrigo.db
+# Create the directory first: mkdir ~/private
+# ---------------------------------------------------------------------------
+
+# Fallback: block direct HTTP access to any .db file in the webroot.
+# This is a second line of defence; the SetEnv approach above is preferred.
 <FilesMatch "\.db$">
     Require all denied
 </FilesMatch>

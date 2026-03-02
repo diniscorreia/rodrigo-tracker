@@ -13,7 +13,7 @@ date_default_timezone_set('Europe/Lisbon');
 
 function initDatabase(): PDO
 {
-    $dbPath = __DIR__ . '/data/rodrigo.db';
+    $dbPath = getenv('RODRIGO_DB_PATH') ?: __DIR__ . '/data/rodrigo.db';
     $isNew = !file_exists($dbPath);
 
     $db = new PDO('sqlite:' . $dbPath);
