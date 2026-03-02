@@ -2,14 +2,13 @@
 /**
  * og-image.php — Dynamic OG image (1200×630 PNG)
  *
- * Shows the week progress ring + current balance.
- * Requires GD with FreeType support (standard on PHP 8.2+).
- * Cached by crawlers for 1 hour via Cache-Control header.
+ * Renders only the week-progress ring, centred on the canvas.
+ * Rounded linecaps are simulated by drawing a filled circle at each
+ * arc endpoint before punching out the donut hole.
  */
 declare(strict_types=1);
 
-// Buffer all output so any PHP warning can't corrupt the PNG stream
-ob_start();
+ob_start(); // buffer so stray PHP warnings can't corrupt the PNG stream
 
 ini_set('display_errors', '0');
 error_reporting(0);
@@ -18,62 +17,48 @@ require_once __DIR__ . '/init.php';
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
-$db      = initDatabase();
-$balData = calculateBalance($db);
-$week    = getCurrentWeek($db);
-
-$balance    = $balData['balance'];
-$streak     = $balData['streak'];
+$db         = initDatabase();
+$week       = getCurrentWeek($db);
 $daysLogged = $week['days_logged'];
 
 // ─── Canvas ──────────────────────────────────────────────────────────────────
 
-$W = 1200;
-$H = 630;
+$W  = 1200;
+$H  = 630;
 $im = imagecreatetruecolor($W, $H);
 imagealphablending($im, true);
 
 // ─── Palette ─────────────────────────────────────────────────────────────────
 
-$cBg      = imagecolorallocate($im,  10,  10,  15);  // #0a0a0f
-$cTrack   = imagecolorallocate($im,  28,  28,  42);  // ring track
-$cText    = imagecolorallocate($im, 240, 240, 248);  // near-white
-$cMuted   = imagecolorallocate($im,  88,  88, 108);  // muted
-$cSecond  = imagecolorallocate($im, 148, 148, 168);  // secondary
-$cGreen   = imagecolorallocate($im,   0, 230, 118);  // #00e676
-$cAmber   = imagecolorallocate($im, 255, 179,   0);  // #ffb300
-$cRed     = imagecolorallocate($im, 255,  72,  72);
-
-$cBalance  = $balance > 0 ? $cGreen : ($balance < 0 ? $cRed : $cText);
+$cBg       = imagecolorallocate($im,  10,  10,  15);  // #0a0a0f
+$cTrack    = imagecolorallocate($im,  28,  28,  42);  // ring track
+$cText     = imagecolorallocate($im, 240, 240, 248);  // near-white
+$cSecond   = imagecolorallocate($im, 148, 148, 168);  // secondary / muted
+$cGreen    = imagecolorallocate($im,   0, 230, 118);  // #00e676
+$cAmber    = imagecolorallocate($im, 255, 179,   0);  // #ffb300
 $cProgress = $daysLogged >= 4 ? $cGreen : $cAmber;
 
 // ─── Fonts ───────────────────────────────────────────────────────────────────
 
 $fonts    = __DIR__ . '/assets/fonts/';
 $fBlack   = $fonts . 'Inter-Black.ttf';
-$fBold    = $fonts . 'Inter-Bold.ttf';
 $fRegular = $fonts . 'Inter-Regular.ttf';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-/**
- * Write UTF-8 text horizontally centred at $cx, baseline at $y.
- * Returns the text width in pixels.
- */
+/** Write UTF-8 text horizontally centred at $cx, baseline at $y. */
 function ogText(
     GdImage $im, float $size, string $font,
     string $text, int $cx, int $y, int $color
-): int {
+): void {
     $bb = imagettfbbox($size, 0, $font, $text);
-    $tw = $bb[2] - $bb[0];
-    $x  = $cx - (int)($tw / 2);
+    $x  = $cx - (int)(($bb[2] - $bb[0]) / 2);
     imagettftext($im, $size, 0, $x, $y, $color, $font, $text);
-    return $tw;
 }
 
 /**
- * Draw a clockwise filled arc from $startDeg for $sweepDeg degrees.
- * Handles the 360° wrap that imagefilledarc can't do natively.
+ * Draw a filled arc-pie clockwise from $startDeg for $sweepDeg degrees.
+ * Handles the 360° wrap that imagefilledarc can't natively do in one call.
  */
 function ogArc(
     GdImage $im, int $cx, int $cy, int $d,
@@ -100,89 +85,74 @@ function ogArc(
 
 imagefill($im, 0, 0, $cBg);
 
-// ─── Subtle glow around the ring ─────────────────────────────────────────────
-// Draw semi-transparent halos before the ring so they show only outside the
-// ring stroke (the solid track circle will cover the inner ones).
+// ─── Ring geometry ───────────────────────────────────────────────────────────
+// SVG ring: r=85, stroke-width=12 → outer=91, inner=79 (ratio ~8.7% of r)
+// Scale to OG: midR=180 → outerR = round(180 * 91/85) ≈ 193, innerR ≈ 167
+// Keeping nice round numbers with similar proportions:
 
-[$gr, $gg, $gb] = $daysLogged >= 4 ? [0, 200, 100] : [220, 140, 0];
+$cx     = (int)($W / 2);   // 600 — exact horizontal centre
+$cy     = (int)($H / 2);   // 315 — exact vertical centre
+$outerR = 190;
+$innerR = 162;
+$midR   = (int)(($outerR + $innerR) / 2);  // 176 — ring centreline radius
+$capR   = (int)(($outerR - $innerR) / 2);  // 14  — half stroke width
 
-$cx     = (int)($W / 2);  // 600
-$cy     = 258;
-$outerR = 135;             // ring outer radius
+$outerD = $outerR * 2;   // 380
+$innerD = $innerR * 2;   // 324
 
-for ($gr_r = $outerR + 60; $gr_r >= $outerR - 10; $gr_r -= 5) {
-    $dist  = $gr_r - $outerR;                         // 60 → -10
-    $alpha = (int)(127 - max(0, 36 - $dist * 0.9));   // subtler further out
-    $alpha = max(100, min(127, $alpha));
-    $gc    = imagecolorallocatealpha($im, $gr, $gg, $gb, $alpha);
-    imagefilledellipse($im, $cx, $cy, $gr_r * 2, $gr_r * 2, $gc);
+$sweepDeg = ($daysLogged / 7) * 360.0;
+
+// 1. Track (full dark circle)
+imagefilledellipse($im, $cx, $cy, $outerD, $outerD, $cTrack);
+
+// 2. Progress arc (clockwise from top = 270°)
+ogArc($im, $cx, $cy, $outerD, 270, $sweepDeg, $cProgress);
+
+// 3. Rounded caps — filled circles at the arc endpoints, BEFORE punch-out
+//    so the punch-out cleans up any sub-pixel overhang into the hole.
+//    Not needed for 0 days (nothing to cap) or 7 days (full circle).
+if ($daysLogged > 0 && $daysLogged < 7) {
+    // Start cap — always at 270° (12 o'clock)
+    $startRad = deg2rad(270);
+    $scx = (int)round($cx + $midR * cos($startRad));
+    $scy = (int)round($cy + $midR * sin($startRad));
+    imagefilledellipse($im, $scx, $scy, $capR * 2, $capR * 2, $cProgress);
+
+    // End cap — at the tip of the progress arc
+    $endRad = deg2rad(270 + $sweepDeg);
+    $ecx = (int)round($cx + $midR * cos($endRad));
+    $ecy = (int)round($cy + $midR * sin($endRad));
+    imagefilledellipse($im, $ecx, $ecy, $capR * 2, $capR * 2, $cProgress);
 }
 
-// ─── Ring ────────────────────────────────────────────────────────────────────
-
-$outerD = $outerR * 2;   // 270
-$innerD = 206;            // inner diameter → stroke ~32 px
-
-imagefilledellipse($im, $cx, $cy, $outerD, $outerD, $cTrack);  // track
-ogArc($im, $cx, $cy, $outerD, 270, ($daysLogged / 7) * 360.0, $cProgress);
-imagefilledellipse($im, $cx, $cy, $innerD, $innerD, $cBg);     // punch centre
+// 4. Punch out centre (donut hole)
+imagefilledellipse($im, $cx, $cy, $innerD, $innerD, $cBg);
 
 // ─── Text inside ring ────────────────────────────────────────────────────────
 
-$countStr  = (string)$daysLogged;
-$subStr    = 'vezes esta semana';
+$suffix = $daysLogged === 1 ? 'vez' : 'vezes';
+$line1  = $daysLogged . ' ' . $suffix;   // e.g. "1 vez" / "5 vezes"
+$line2  = 'esta semana';
 
-$bbCount   = imagettfbbox(64, 0, $fBlack,   $countStr);
-$countCapH = abs($bbCount[5]);   // height above baseline
+$bbL1   = imagettfbbox(34, 0, $fBlack,   $line1);
+$l1CapH = abs($bbL1[5]);
 
-$bbSub     = imagettfbbox(13, 0, $fRegular, $subStr);
-$subCapH   = abs($bbSub[5]);
+$bbL2   = imagettfbbox(15, 0, $fRegular, $line2);
+$l2CapH = abs($bbL2[5]);
 
-$innerGap  = 9;
-$blockH    = $countCapH + $innerGap + $subCapH;
+$gap       = 10;
+$blockH    = $l1CapH + $gap + $l2CapH;
 $blockTopY = $cy - (int)($blockH / 2);
 
-$countY    = $blockTopY + $countCapH;
-$subY      = $countY + $innerGap + $subCapH;
+$line1Y = $blockTopY + $l1CapH;
+$line2Y = $line1Y + $gap + $l2CapH;
 
-ogText($im, 64, $fBlack,   $countStr, $cx, $countY, $cText);
-ogText($im, 13, $fRegular, $subStr,   $cx, $subY,   $cMuted);
+ogText($im, 34, $fBlack,   $line1, $cx, $line1Y, $cText);
+ogText($im, 15, $fRegular, $line2, $cx, $line2Y, $cSecond);
 
-// ─── Balance ─────────────────────────────────────────────────────────────────
+// ─── Output ──────────────────────────────────────────────────────────────────
 
-$absFormatted = number_format(abs($balance), 2, ',', '.');
-$sign         = $balance < 0 ? '-' : '';
-$balStr       = $sign . $absFormatted . "\u{00a0}€";
-
-$bbBal   = imagettfbbox(76, 0, $fBlack, $balStr);
-$balCapH = abs($bbBal[5]);
-
-$balY = 478;
-ogText($im, 76, $fBlack,   $balStr, $cx, $balY,       $cBalance);
-ogText($im, 13, $fRegular, 'SALDO', $cx, $balY + 26,  $cMuted);
-
-// ─── Streak ──────────────────────────────────────────────────────────────────
-
-if ($streak > 0) {
-    $pl  = $streak === 1;
-    $str = $streak . ' semana' . ($pl ? '' : 's')
-         . ' consecutiva' . ($pl ? '' : 's')
-         . ' boa' . ($pl ? '' : 's');
-    ogText($im, 15, $fRegular, $str, $cx, 570, $cMuted);
-}
-
-// ─── Title ───────────────────────────────────────────────────────────────────
-
-ogText($im, 21, $fBold, 'O Rodrigo Foi Treinar?', $cx, 60, $cSecond);
-
-// Thin rule below title
-imageline($im, $cx - 160, 78, $cx + 160, 78, $cTrack);
-
-// ─── Render ──────────────────────────────────────────────────────────────────
-
-// Discard any stray PHP output that could corrupt the PNG
 ob_end_clean();
-
 header('Content-Type: image/png');
 header('Cache-Control: public, max-age=3600');
 imagepng($im, null, 6);
