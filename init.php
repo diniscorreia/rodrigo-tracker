@@ -33,7 +33,6 @@ function initDatabase(): PDO
     $db->exec("CREATE TABLE IF NOT EXISTS gym_logs (
         id         INTEGER PRIMARY KEY AUTOINCREMENT,
         log_date   TEXT    NOT NULL UNIQUE,
-        logged_by  TEXT    NOT NULL,
         created_at TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%S', 'now')),
         deleted_at TEXT    DEFAULT NULL
     )");
@@ -45,7 +44,6 @@ function initDatabase(): PDO
         id         INTEGER PRIMARY KEY AUTOINCREMENT,
         amount     REAL    NOT NULL CHECK(amount > 0),
         note       TEXT    DEFAULT '',
-        logged_by  TEXT    NOT NULL,
         created_at TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%S', 'now'))
     )");
 
@@ -53,6 +51,15 @@ function initDatabase(): PDO
         key   TEXT PRIMARY KEY,
         value TEXT NOT NULL
     )");
+
+    // Migration: drop legacy logged_by column from older installs (SQLite 3.35+)
+    foreach (['gym_logs', 'withdrawals'] as $table) {
+        try {
+            $db->exec("ALTER TABLE {$table} DROP COLUMN logged_by");
+        } catch (PDOException) {
+            // Column doesn't exist — nothing to do
+        }
+    }
 
     // Seed defaults on first run
     if ($isNew) {
@@ -235,7 +242,7 @@ function evaluateWeek(int $dayCount): float
 function calculateBalance(PDO $db): array
 {
     // Fetch all active gym logs
-    $stmt = $db->query("SELECT log_date, logged_by FROM gym_logs WHERE deleted_at IS NULL ORDER BY log_date ASC");
+    $stmt = $db->query("SELECT log_date FROM gym_logs WHERE deleted_at IS NULL ORDER BY log_date ASC");
     $logs = $stmt->fetchAll();
 
     // Fetch total withdrawals
@@ -328,7 +335,7 @@ function getCurrentWeek(PDO $db): array
     $sunday = getWeekSunday($monday);
 
     $stmt = $db->prepare(
-        "SELECT log_date, logged_by FROM gym_logs
+        "SELECT log_date FROM gym_logs
          WHERE log_date BETWEEN ? AND ? AND deleted_at IS NULL
          ORDER BY log_date ASC"
     );
@@ -437,6 +444,6 @@ function calculateProjection(float $currentBalance, int $currentStreak, array $c
 
 function getWithdrawals(PDO $db): array
 {
-    $stmt = $db->query("SELECT id, amount, note, logged_by, created_at FROM withdrawals ORDER BY created_at DESC");
+    $stmt = $db->query("SELECT id, amount, note, created_at FROM withdrawals ORDER BY created_at DESC");
     return $stmt->fetchAll();
 }

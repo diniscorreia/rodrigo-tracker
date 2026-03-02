@@ -117,7 +117,7 @@ function handleLogDay(PDO $db): void
     }
 
     try {
-        $stmt = $db->prepare("INSERT INTO gym_logs (log_date, logged_by) VALUES (?, '')");
+        $stmt = $db->prepare("INSERT INTO gym_logs (log_date) VALUES (?)");
         $stmt->execute([$date]);
     } catch (PDOException $e) {
         if (str_contains($e->getMessage(), 'UNIQUE constraint')) {
@@ -169,7 +169,7 @@ function handleWithdraw(PDO $db): void
         $note = mb_substr($note, 0, 200);
     }
 
-    $stmt = $db->prepare("INSERT INTO withdrawals (amount, note, logged_by) VALUES (?, ?, '')");
+    $stmt = $db->prepare("INSERT INTO withdrawals (amount, note) VALUES (?, ?)");
     $stmt->execute([$amount, $note]);
 
     $formatted = number_format($amount, 2, ',', '.');

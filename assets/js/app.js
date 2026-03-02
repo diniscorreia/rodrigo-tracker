@@ -176,7 +176,7 @@
 
         const loggedDates = {};
         week.days.forEach((d) => {
-            loggedDates[d.log_date] = d.logged_by || true;
+            loggedDates[d.log_date] = true;
         });
 
         const todayDate = new Date(today + 'T00:00:00');
@@ -460,8 +460,8 @@
                 const el = document.createElement('div');
                 el.className = 'history-withdrawal';
                 const noteHtml = w.note
-                    ? `<div class="history-withdrawal-note">${escapeHtml(w.note)}${w.logged_by ? ' — ' + escapeHtml(w.logged_by) : ''}</div>`
-                    : (w.logged_by ? `<div class="history-withdrawal-note">${escapeHtml(w.logged_by)}</div>` : '');
+                    ? `<div class="history-withdrawal-note">${escapeHtml(w.note)}</div>`
+                    : '';
                 el.innerHTML = `
                     <div class="history-withdrawal-header">
                         <span>${formatDate(w.created_at.split('T')[0])}</span>
@@ -490,10 +490,7 @@
             let detailHtml = '';
             if (week.days && week.days.length > 0) {
                 detailHtml = week.days
-                    .map((d) => {
-                        const who = d.logged_by ? `<span class="history-day-who">${escapeHtml(d.logged_by)}</span>` : '';
-                        return `<div class="history-day"><span>${formatDate(d.log_date)}</span>${who}</div>`;
-                    })
+                    .map((d) => `<div class="history-day"><span>${formatDate(d.log_date)}</span></div>`)
                     .join('');
             } else {
                 detailHtml = '<div class="history-day" style="color: var(--accent-red)">Nenhum dia registado</div>';

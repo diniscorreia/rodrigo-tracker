@@ -31,12 +31,12 @@ A single-user gym accountability tracker. One person (Rodrigo) logs gym visits; 
 ## Database schema
 
 ```sql
-gym_logs    (id, log_date UNIQUE, logged_by, created_at, deleted_at)
-withdrawals (id, amount, note, logged_by, created_at)
+gym_logs    (id, log_date UNIQUE, created_at, deleted_at)
+withdrawals (id, amount, note, created_at)
 settings    (key, value)  -- pin_hash, challenge_end_date
 ```
 
-Gym logs use soft deletes (`deleted_at`). `logged_by` is kept in schema for history display but is always stored as `''` (single-user mode).
+Gym logs use soft deletes (`deleted_at`).
 
 ## API endpoints
 
