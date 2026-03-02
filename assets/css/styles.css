@@ -352,8 +352,8 @@ h3 {
 
 .week-progress-ring {
     display: block;
-    width: 220px;
-    height: 220px;
+    width: 260px;
+    height: 260px;
     transform: rotate(-90deg);
 }
 
@@ -948,8 +948,8 @@ h3 {
 
 @media (max-width: 899px) {
     .week-progress-ring {
-        width: 180px;
-        height: 180px;
+        width: 210px;
+        height: 210px;
     }
 
     #week-ring-label {
