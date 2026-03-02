@@ -49,7 +49,7 @@ function initDatabase(): PDO
 
     $db->exec("CREATE TABLE IF NOT EXISTS withdrawals (
         id         INTEGER PRIMARY KEY AUTOINCREMENT,
-        amount     REAL    NOT NULL CHECK(amount > 0),
+        amount     REAL    NOT NULL,
         note       TEXT    DEFAULT '',
         created_at TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%S', 'now'))
     )");
@@ -66,6 +66,25 @@ function initDatabase(): PDO
         } catch (PDOException) {
             // Column doesn't exist — nothing to do
         }
+    }
+
+    // Migration: remove CHECK(amount > 0) constraint to allow negative amounts
+    // (debt payments where Rodrigo settles a negative balance)
+    $tableSql = $db->query(
+        "SELECT sql FROM sqlite_master WHERE type='table' AND name='withdrawals'"
+    )->fetchColumn();
+    if ($tableSql && stripos($tableSql, 'CHECK') !== false) {
+        $db->exec('BEGIN');
+        $db->exec("CREATE TABLE withdrawals_new (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            amount     REAL    NOT NULL,
+            note       TEXT    DEFAULT '',
+            created_at TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%S', 'now'))
+        )");
+        $db->exec("INSERT INTO withdrawals_new SELECT id, amount, note, created_at FROM withdrawals");
+        $db->exec("DROP TABLE withdrawals");
+        $db->exec("ALTER TABLE withdrawals_new RENAME TO withdrawals");
+        $db->exec('COMMIT');
     }
 
     // Seed defaults on first run
@@ -168,8 +187,8 @@ function validateDate(string $date): bool
 function validateAmount($amount): float
 {
     $amount = filter_var($amount, FILTER_VALIDATE_FLOAT);
-    if ($amount === false || $amount <= 0 || $amount > 100) {
-        jsonError('Valor inválido (deve ser entre €0.01 e €100.00).', 400);
+    if ($amount === false || $amount == 0 || abs($amount) > 100) {
+        jsonError('Valor inválido (deve ser diferente de zero e no máximo €100.00).', 400);
     }
     return $amount;
 }

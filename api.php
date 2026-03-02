@@ -175,8 +175,11 @@ function handleWithdraw(PDO $db): void
     $stmt = $db->prepare("INSERT INTO withdrawals (amount, note) VALUES (?, ?)");
     $stmt->execute([$amount, $note]);
 
-    $formatted = number_format($amount, 2, ',', '.');
-    jsonMessage("Levantamento de {$formatted}\u{00a0}€ registado.");
+    $formatted = number_format(abs($amount), 2, ',', '.');
+    $msg = $amount > 0
+        ? "Liquidação de {$formatted}\u{00a0}€ registada. Saldo pago ao Rodrigo."
+        : "Liquidação de {$formatted}\u{00a0}€ registada. Dívida paga por Rodrigo.";
+    jsonMessage($msg);
 }
 
 function handleVerifyPin(PDO $db): void

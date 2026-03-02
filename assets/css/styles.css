@@ -672,6 +672,14 @@ h3 {
     margin-top: 0.25rem;
 }
 
+.history-payment {
+    border-left-color: var(--accent-green);
+}
+
+.history-withdrawal-amount.positive {
+    color: var(--accent-green);
+}
+
 /* ---------- Rules ---------- */
 
 .rules-table {

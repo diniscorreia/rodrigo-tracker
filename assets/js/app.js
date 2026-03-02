@@ -355,7 +355,23 @@
         $('#modal-admin').hidden = true;
         const overlay = $('#modal-overlay');
         const modal = $('#modal-withdraw');
-        $('#withdraw-amount').value = '';
+
+        // Pre-fill with current balance and show a direction hint
+        const balance = state.status ? state.status.balance : 0;
+        $('#withdraw-amount').value = balance !== 0
+            ? Math.abs(balance).toFixed(2)
+            : '';
+        const hint = $('#withdraw-hint');
+        if (hint) {
+            if (balance > 0) {
+                hint.textContent = '— saldo positivo, Rodrigo recebe';
+            } else if (balance < 0) {
+                hint.textContent = '— saldo negativo, Rodrigo paga';
+            } else {
+                hint.textContent = '';
+            }
+        }
+
         $('#withdraw-note').value = '';
         $('#withdraw-error').hidden = true;
 
@@ -365,16 +381,22 @@
     }
 
     async function submitWithdraw() {
-        const amount = parseFloat($('#withdraw-amount').value);
+        const raw = parseFloat($('#withdraw-amount').value);
         const note = $('#withdraw-note').value.trim();
         const errEl = $('#withdraw-error');
         errEl.hidden = true;
 
-        if (!amount || amount <= 0) {
+        if (!raw || raw <= 0) {
             errEl.textContent = 'Valor inválido.';
             errEl.hidden = false;
             return;
         }
+
+        // Sign depends on current balance direction:
+        // positive balance → Rodrigo receives (positive withdrawal reduces balance)
+        // negative balance → Rodrigo pays (negative withdrawal reduces the debt)
+        const balance = state.status ? state.status.balance : 0;
+        const amount = balance < 0 ? -raw : raw;
 
         const res = await apiPost('withdraw', { amount, note });
         if (!res.ok) {
@@ -458,14 +480,20 @@
 
             withdrawals.forEach((w) => {
                 const el = document.createElement('div');
-                el.className = 'history-withdrawal';
+                const isPayout = w.amount > 0;
+                el.className = 'history-withdrawal' + (isPayout ? '' : ' history-payment');
                 const noteHtml = w.note
                     ? `<div class="history-withdrawal-note">${escapeHtml(w.note)}</div>`
                     : '';
+                // Effect on balance: payout reduces (+amount → shown as -), payment increases (-amount → shown as +)
+                const effectLabel = isPayout
+                    ? `-${formatEuro(w.amount)}`
+                    : `+${formatEuro(Math.abs(w.amount))}`;
+                const typeLabel = isPayout ? 'Liquidação' : 'Pagamento';
                 el.innerHTML = `
                     <div class="history-withdrawal-header">
-                        <span>${formatDate(w.created_at.split('T')[0])}</span>
-                        <span class="history-withdrawal-amount">-${formatEuro(w.amount)}</span>
+                        <span>${formatDate(w.created_at.split('T')[0])} <small style="opacity:0.6">${typeLabel}</small></span>
+                        <span class="history-withdrawal-amount${isPayout ? '' : ' positive'}">${effectLabel}</span>
                     </div>
                     ${noteHtml}
                 `;

@@ -125,7 +125,7 @@ $_baseUrl = $_proto . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
                 </div>
                 <div class="action-buttons">
                     <button id="log-past-btn" class="btn btn-secondary">Registar dia passado</button>
-                    <button id="withdraw-btn" class="btn btn-secondary">Levantar dinheiro</button>
+                    <button id="withdraw-btn" class="btn btn-secondary">Liquidar</button>
                     <button id="settings-btn" class="btn btn-secondary">Definições</button>
                 </div>
             </div>
@@ -218,18 +218,18 @@ $_baseUrl = $_proto . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
                 <p id="past-date-error" class="error-text" hidden></p>
             </div>
 
-            <!-- Withdraw modal -->
+            <!-- Liquidar modal -->
             <div id="modal-withdraw" class="modal" hidden>
                 <div class="modal-header">
-                    <h3>Levantar dinheiro</h3>
+                    <h3>Liquidar</h3>
                     <button class="modal-close modal-cancel" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
                 </div>
-                <label for="withdraw-amount">Valor (€)</label>
-                <input type="number" id="withdraw-amount" min="0.01" max="100" step="0.01" placeholder="0,00">
+                <label for="withdraw-amount">Valor (€) <span id="withdraw-hint" style="font-style:italic;opacity:0.6;text-transform:none;letter-spacing:0"></span></label>
+                <input type="number" id="withdraw-amount" min="-100" max="100" step="0.01" placeholder="0,00">
                 <label for="withdraw-note">Nota (opcional)</label>
                 <input type="text" id="withdraw-note" maxlength="200" placeholder="Ex: Rodrigo pagou almoço">
                 <div class="modal-buttons">
-                    <button class="btn btn-danger" id="withdraw-submit">Levantar</button>
+                    <button class="btn btn-danger" id="withdraw-submit">Liquidar</button>
                 </div>
                 <p id="withdraw-error" class="error-text" hidden></p>
             </div>
