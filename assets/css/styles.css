@@ -332,12 +332,15 @@ h3 {
 }
 
 #jar-label {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
+
 
 /* ---------- Week Progress Ring ---------- */
 
@@ -387,19 +390,18 @@ h3 {
     font-weight: 900;
     color: var(--text-primary);
     white-space: nowrap;
-    letter-spacing: -0.5px;
     text-align: center;
     line-height: 1.3;
 }
 
 .week-ring-sublabel {
     display: block;
-    font-size: 0.6rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: var(--text-secondary);
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
+    margin-top: 0.25rem;
 }
+
 
 /* ---------- Current Week ---------- */
 
@@ -428,8 +430,8 @@ h3 {
 }
 
 .dot {
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
     background: var(--bg-surface);
     transition: all 0.3s;
@@ -447,7 +449,7 @@ h3 {
 
 .dot.today {
     background: transparent;
-    border: 1.5px solid var(--text-muted);
+    border: 1px solid var(--text-muted);
 }
 
 .dot.today.filled {
@@ -457,7 +459,6 @@ h3 {
 
 .dot.future {
     background: var(--bg-surface);
-    opacity: 0.35;
 }
 
 .dot-label {
@@ -491,21 +492,20 @@ h3 {
 
 .projection-text {
     text-align: center;
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    font-style: italic;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
     line-height: 1.5;
     margin-top: 0.85rem;
 }
 
 .projection-text.positive {
     color: var(--accent-green);
-    opacity: 0.85;
+    opacity: 0.75;
 }
 
 .projection-text.negative {
     color: var(--accent-red);
-    opacity: 0.85;
+    opacity: 0.75;
 }
 
 /* ---------- Settings modal ---------- */
@@ -516,7 +516,7 @@ h3 {
 
 .settings-section-title {
     font-size: 0.72rem;
-    font-weight: 600;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--text-muted);
@@ -528,6 +528,7 @@ h3 {
     color: var(--text-muted);
     font-weight: 400;
     margin-left: 0.25rem;
+    opacity: 0.85;
 }
 
 .settings-divider {
@@ -703,10 +704,6 @@ h3 {
     margin-bottom: 0.4rem;
 }
 
-.rules-extras strong {
-    color: var(--accent-gold);
-}
-
 /* ---------- Modals ---------- */
 
 .modal-overlay {
@@ -799,17 +796,11 @@ h3 {
     text-align: center;
     font-size: 1.5rem;
     letter-spacing: 4px;
-    width: 160px;
     margin: 1rem auto 0;
 }
 
 #modal-pin .modal-buttons {
     justify-content: center;
-}
-
-#modal-pin .modal-buttons .btn {
-    flex: none;
-    width: 160px;
 }
 
 #modal-rules {

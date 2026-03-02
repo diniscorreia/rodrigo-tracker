@@ -96,7 +96,7 @@
                 </div>
                 <div id="history-list" class="history-scroll"></div>
                 <div class="modal-buttons">
-                    <button id="load-more-btn" class="btn btn-secondary" hidden>Carregar Mais</button>
+                    <button id="load-more-btn" class="btn btn-secondary" hidden>Carregar mais</button>
                 </div>
             </div>
 
@@ -137,11 +137,11 @@
                 <hr class="settings-divider">
 
                 <div class="settings-section">
-                    <h4 class="settings-section-title">Mudar PIN</h4>
+                    <h4 class="settings-section-title">PIN</h4>
                     <label for="settings-new-pin">Novo PIN</label>
                     <input type="password" id="settings-new-pin" maxlength="6" inputmode="numeric" placeholder="****" autocomplete="new-password" data-1p-ignore="true" data-lpignore="true" data-form-type="other">
                     <div class="modal-buttons">
-                        <button class="btn btn-secondary" id="settings-pin-save">Mudar PIN</button>
+                        <button class="btn btn-primary" id="settings-pin-save">Mudar</button>
                     </div>
                     <p id="settings-pin-msg" class="success-text" hidden></p>
                 </div>
