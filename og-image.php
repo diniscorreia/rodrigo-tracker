@@ -100,7 +100,7 @@ $capR   = (int)(($outerR - $innerR) / 2);  // 15  — half stroke width
 $outerD = $outerR * 2;   // 460
 $innerD = $innerR * 2;   // 400
 
-$sweepDeg = ($daysLogged / 7) * 360.0;
+$sweepDeg = (min($daysLogged, 6) / 6) * 360.0;
 
 // 1. Track (full dark circle)
 imagefilledellipse($im, $cx, $cy, $outerD, $outerD, $cTrack);

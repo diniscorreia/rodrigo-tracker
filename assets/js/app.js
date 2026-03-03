@@ -169,7 +169,7 @@
         // Update week progress ring
         const ringFill = $('#week-ring-fill');
         const ringLabel = $('#week-ring-label');
-        const pct = (week.days_logged / 7) * 100;
+        const pct = (Math.min(week.days_logged, 6) / 6) * 100;
         ringFill.style.setProperty('--week-ring-pct', pct);
         ringFill.setAttribute('class', 'week-ring-progress' + (week.days_logged >= 4 ? ' good' : ''));
         ringLabel.innerHTML = `${week.days_logged} vez${week.days_logged !== 1 ? 'es' : ''}<span class="week-ring-sublabel">esta semana</span>`;
