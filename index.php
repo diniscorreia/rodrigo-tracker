@@ -81,7 +81,7 @@ $_baseUrl = $_proto . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
                         <circle class="ring-bg" cx="100" cy="100" r="85" />
                         <circle id="week-ring-fill" class="week-ring-progress" cx="100" cy="100" r="85" />
                     </svg>
-                    <div id="week-ring-label">0 vezes<span class="week-ring-sublabel">esta semana</span></div>
+                    <div id="week-ring-label">&nbsp;<span class="week-ring-sublabel">esta semana</span></div>
                 </div>
                 <div id="week-dates" class="week-dates"></div>
                 <div id="week-dots" class="week-dots">
