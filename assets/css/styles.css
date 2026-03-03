@@ -127,24 +127,33 @@ h3 {
     flex-shrink: 0;
 }
 
-.header-icons > * + * { margin-left: 0.25rem; }
+.header-icons > * + * { margin-left: 0.5rem; }
 
-.icon-btn {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 50%;
-    transition: all 0.2s;
+.pill-btn {
     display: flex;
     align-items: center;
-    justify-content: center;
+    background: var(--bg-surface);
+    border: none;
+    border-radius: 999px;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 0.4rem 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition: all 0.2s;
 }
 
-.icon-btn:hover {
-    color: var(--text-primary);
-    background: rgba(255, 255, 255, 0.06);
+.pill-btn:hover {
+    background: #262636;
+}
+
+.pill-label {
+    margin-left: 0.4rem;
+}
+
+#gear-btn {
+    padding: 0.4rem 0.6rem;
 }
 
 #gear-btn.authenticated {
@@ -936,6 +945,15 @@ h3 {
 
     .header-icons {
         justify-content: center;
+    }
+
+    .pill-btn {
+        padding: 0.35rem 0.65rem;
+        font-size: 0.75rem;
+    }
+
+    #gear-btn {
+        padding: 0.35rem 0.5rem;
     }
 
     .subtitle {
