@@ -171,7 +171,6 @@
         const ringLabel = $('#week-ring-label');
         const pct = (Math.min(week.days_logged, 6) / 6) * 100;
         ringFill.style.setProperty('--week-ring-pct', pct);
-        ringFill.setAttribute('class', 'week-ring-progress' + (week.days_logged >= 4 ? ' good' : ''));
         ringLabel.innerHTML = `${week.days_logged} vez${week.days_logged !== 1 ? 'es' : ''}<span class="week-ring-sublabel">esta semana</span>`;
 
         const loggedDates = {};
@@ -181,6 +180,18 @@
 
         const todayDate = new Date(today + 'T00:00:00');
         const todayDow = todayDate.getDay() === 0 ? 7 : todayDate.getDay();
+
+        const todayLogged = !!loggedDates[today];
+        const additionalPossible = (7 - todayDow) + (todayLogged ? 0 : 1);
+        const maxPossible = week.days_logged + additionalPossible;
+
+        var ringClass = 'week-ring-progress';
+        if (week.days_logged >= 5) {
+            ringClass += ' good';
+        } else if (week.days_logged < 4 && maxPossible < 4) {
+            ringClass += ' bad';
+        }
+        ringFill.setAttribute('class', ringClass);
 
         const dots = $$('.dot');
         dots.forEach((dot) => {

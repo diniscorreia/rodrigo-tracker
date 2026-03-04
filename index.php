@@ -77,6 +77,10 @@ $_baseUrl = $_proto . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
                                 <stop offset="0%" stop-color="#00e676"/>
                                 <stop offset="100%" stop-color="#69f0ae"/>
                             </linearGradient>
+                            <linearGradient id="week-grad-bad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#ff5252"/>
+                                <stop offset="100%" stop-color="#ff867f"/>
+                            </linearGradient>
                         </defs>
                         <circle class="ring-bg" cx="100" cy="100" r="85" />
                         <circle id="week-ring-fill" class="week-ring-progress" cx="100" cy="100" r="85" />

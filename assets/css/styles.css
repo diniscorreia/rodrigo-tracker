@@ -391,6 +391,11 @@ h3 {
     filter: drop-shadow(0 0 6px rgba(0, 230, 118, 0.3));
 }
 
+.week-ring-progress.bad {
+    stroke: url(#week-grad-bad);
+    filter: drop-shadow(0 0 6px rgba(255, 82, 82, 0.3));
+}
+
 #week-ring-label {
     position: absolute;
     top: 50%;
