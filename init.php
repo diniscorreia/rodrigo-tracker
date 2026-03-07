@@ -258,10 +258,12 @@ function getWeekSunday(string $mondayStr): string
 
 function evaluateWeek(int $dayCount): float
 {
-    if ($dayCount === 0) return -1.50;
-    if ($dayCount <= 3) return -1.00;
-    if ($dayCount === 4) return 0.00;
-    if ($dayCount === 5) return 0.75;
+    if ($dayCount === 0) return -2.00;
+    if ($dayCount === 1) return -1.50;
+    if ($dayCount === 2) return -1.00;
+    if ($dayCount === 3) return -0.75;
+    if ($dayCount === 4) return  0.00;
+    if ($dayCount === 5) return  0.75;
     return 1.00; // 6 or 7
 }
 
@@ -440,24 +442,27 @@ function calculateProjection(float $currentBalance, int $currentStreak, array $c
     // Build the target phrase — prefer challenge name over date
     if ($challengeName !== null && $challengeName !== '') {
         $article = ($challengeArticle !== null && $challengeArticle !== '') ? $challengeArticle : 'no';
-        $target = "{$article} {$challengeName}";
+        $boldName = '<strong>' . htmlspecialchars($challengeName, ENT_QUOTES, 'UTF-8') . '</strong>';
+        $target = "{$article} {$boldName}";
     } else {
         $ptMonths = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
                      'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
         $endFormatted = $endDate->format('j') . ' de ' . $ptMonths[(int)$endDate->format('n') - 1];
-        $target = "em {$endFormatted}";
+        $target = "em <strong>{$endFormatted}</strong>";
     }
+
+    $boldAmount = "<strong>{$formattedAmount}\u{00a0}€</strong>";
 
     if ($projectedBalance > 0) {
         $message = $avgDaysPerWeek >= 5
-            ? "Bom ritmo! O saldo será {$formattedAmount}\u{00a0}€ {$target}."
-            : "A este ritmo, o saldo será {$formattedAmount}\u{00a0}€ {$target}.";
+            ? "Bom ritmo! O saldo será {$boldAmount} {$target}."
+            : "A este ritmo, o saldo será {$boldAmount} {$target}.";
     } elseif ($projectedBalance == 0.0) {
         $message = "A este ritmo, fica a zeros {$target}. Tem de fazer mais!";
     } else {
         $message = $avgDaysPerWeek >= 4
-            ? "A este ritmo, ainda vai a dever {$formattedAmount}\u{00a0}€ {$target}. Vergonha!"
-            : "A este ritmo, vai a dever {$formattedAmount}\u{00a0}€ {$target}. Vergonha!";
+            ? "A este ritmo, ainda vai a dever {$boldAmount} {$target}. Vergonha!"
+            : "A este ritmo, vai a dever {$boldAmount} {$target}. Vergonha!";
     }
 
     return [

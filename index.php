@@ -195,8 +195,10 @@ $_baseUrl = $_proto . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
                             <tr><th>Dias/Semana</th><th>Resultado</th></tr>
                         </thead>
                         <tbody>
-                            <tr class="rule-bad"><td>0 dias</td><td>-1,50 €</td></tr>
-                            <tr class="rule-bad"><td>1–3 dias</td><td>-1,00 €</td></tr>
+                            <tr class="rule-bad"><td>0 dias</td><td>-2,00 €</td></tr>
+                            <tr class="rule-bad"><td>1 dia</td><td>-1,50 €</td></tr>
+                            <tr class="rule-bad"><td>2 dias</td><td>-1,00 €</td></tr>
+                            <tr class="rule-bad"><td>3 dias</td><td>-0,75 €</td></tr>
                             <tr class="rule-neutral"><td>4 dias</td><td>0,00 €</td></tr>
                             <tr class="rule-good"><td>5 dias</td><td>+0,75 €</td></tr>
                             <tr class="rule-great"><td>6+ dias</td><td>+1,00 €</td></tr>

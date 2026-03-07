@@ -304,7 +304,7 @@
         }
 
         msgEl.hidden = false;
-        msgEl.textContent = projection.message;
+        msgEl.innerHTML = projection.message;
         msgEl.className = 'projection-text';
 
         if (projection.avg_days_per_week >= 5) {
