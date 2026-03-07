@@ -260,6 +260,7 @@ $_baseUrl = $_proto . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
 
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
     <script src="assets/js/app.js?v=<?= filemtime(__DIR__ . '/assets/js/app.js') ?>"></script>
 </body>
 </html>

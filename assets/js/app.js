@@ -14,6 +14,7 @@
         status: null,
         historyPage: 1,
         historyTotal: 1,
+        confettiFired: false,
     };
 
     const API = 'api.php';
@@ -162,6 +163,26 @@
     // =========================================================================
     // Current Week
     // =========================================================================
+    function fireRingConfetti() {
+        if (typeof confetti !== 'function') return;
+        var ring = document.getElementById('week-ring');
+        if (!ring) return;
+        var rect = ring.getBoundingClientRect();
+        var x = (rect.left + rect.width / 2) / window.innerWidth;
+        var y = (rect.top + rect.height / 2) / window.innerHeight;
+        var opts = {
+            particleCount: 60,
+            spread: 360,
+            startVelocity: 22,
+            ticks: 120,
+            origin: { x: x, y: y },
+            colors: ['#00e676', '#69f0ae', '#ffffff', '#ffca28', '#ff9800'],
+            scalar: 0.85,
+        };
+        confetti(opts);
+        setTimeout(function () { confetti(Object.assign({}, opts, { particleCount: 30, startVelocity: 14 })); }, 150);
+    }
+
     function renderCurrentWeek(week, today) {
         const datesEl = $('#week-dates');
         datesEl.textContent = formatDateRange(week.start, week.end);
@@ -188,8 +209,15 @@
         var ringClass = 'week-ring-progress';
         if (week.days_logged >= 5) {
             ringClass += ' good';
-        } else if (week.days_logged < 4 && maxPossible < 4) {
-            ringClass += ' bad';
+            if (!state.confettiFired) {
+                state.confettiFired = true;
+                setTimeout(fireRingConfetti, 900);
+            }
+        } else {
+            state.confettiFired = false;
+            if (week.days_logged < 4 && maxPossible < 4) {
+                ringClass += ' bad';
+            }
         }
         ringFill.setAttribute('class', ringClass);
 
