@@ -7,6 +7,8 @@
     // =========================================================================
     // State
     // =========================================================================
+    const REFRESH_INTERVAL_MS = 2 * 60 * 1000; // 2 minutes
+
     const state = {
         authenticated: false,
         pin: null,
@@ -15,6 +17,7 @@
         historyPage: 1,
         historyTotal: 1,
         confettiFired: false,
+        lastRefresh: null,
     };
 
     const API = 'api.php';
@@ -131,9 +134,19 @@
     // Dashboard — Load & Render
     // =========================================================================
     async function loadStatus() {
+        const dot = $('#refresh-dot');
+        if (dot) { dot.classList.remove('stale'); dot.classList.add('loading'); }
+
         const res = await apiGet('status');
-        if (!res.ok) return;
+
+        if (!res.ok) {
+            if (dot) { dot.classList.remove('loading'); dot.classList.add('stale'); }
+            return;
+        }
+
         state.status = res.data;
+        state.lastRefresh = Date.now();
+        if (dot) { dot.classList.remove('loading', 'stale'); }
 
         renderJar(res.data.balance);
         const clientToday = formatISODate(new Date());
@@ -142,6 +155,16 @@
         renderProjection(res.data.projection);
         renderFab(res.data.current_week, clientToday);
         state.challenge = res.data.challenge;
+    }
+
+    function startAutoRefresh() {
+        setInterval(loadStatus, REFRESH_INTERVAL_MS);
+        document.addEventListener('visibilitychange', function () {
+            if (!document.hidden) {
+                var age = state.lastRefresh ? Date.now() - state.lastRefresh : Infinity;
+                if (age > REFRESH_INTERVAL_MS) loadStatus();
+            }
+        });
     }
 
     // =========================================================================
@@ -169,7 +192,7 @@
         if (!ring) return;
         var rect = ring.getBoundingClientRect();
         var x = (rect.left + rect.width / 2) / window.innerWidth;
-        var y = (rect.top + rect.height / 2) / window.innerHeight;
+        var y = (rect.top + rect.height / 2) / window.innerHeight - 0.05;
         var opts = {
             particleCount: 60,
             spread: 360,
@@ -677,6 +700,7 @@
     function init() {
         bindEvents();
         loadStatus();
+        startAutoRefresh();
     }
 
     document.addEventListener('DOMContentLoaded', init);

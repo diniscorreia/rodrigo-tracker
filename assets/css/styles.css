@@ -160,6 +160,33 @@ h3 {
     color: var(--accent-gold);
 }
 
+#refresh-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    align-self: center;
+    opacity: 0;
+    transition: opacity 0.4s, background 0.4s;
+    flex-shrink: 0;
+}
+
+#refresh-dot.loading {
+    opacity: 1;
+    background: var(--text-secondary);
+    animation: refresh-pulse 1s ease-in-out infinite;
+}
+
+#refresh-dot.stale {
+    opacity: 1;
+    background: var(--accent-gold);
+}
+
+@keyframes refresh-pulse {
+    0%, 100% { opacity: 0.3; }
+    50%       { opacity: 1; }
+}
+
 /* ---------- Cards ---------- */
 
 .card {
