@@ -378,10 +378,12 @@
         const today = new Date();
         const dow = today.getDay(); // 0=Sun, 1=Mon … 6=Sat
         const daysFromMonday = dow === 0 ? 6 : dow - 1;
-        const monday = new Date(today);
-        monday.setDate(today.getDate() - daysFromMonday);
+        const thisMonday = new Date(today);
+        thisMonday.setDate(today.getDate() - daysFromMonday);
+        const lastMonday = new Date(thisMonday);
+        lastMonday.setDate(thisMonday.getDate() - 7);
         input.max = formatISODate(today);
-        input.min = formatISODate(monday);
+        input.min = formatISODate(lastMonday);
         input.value = '';
         errEl.hidden = true;
 
