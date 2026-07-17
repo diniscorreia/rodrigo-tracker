@@ -31,12 +31,15 @@ A single-user gym accountability tracker. One person (Rodrigo) logs gym visits; 
 ## Database schema
 
 ```sql
-gym_logs    (id, log_date UNIQUE, created_at, deleted_at)
-withdrawals (id, amount, note, created_at)
-settings    (key, value)  -- pin_hash, challenge_end_date
+gym_logs       (id, log_date UNIQUE, created_at, deleted_at)
+withdrawals    (id, amount, note, created_at)
+settings       (key, value)  -- pin_hash, challenge_end_date
+balance_pauses (id, start_date, end_date, reason, created_at)
 ```
 
 Gym logs use soft deletes (`deleted_at`).
+
+`balance_pauses`: `end_date IS NULL` means the pause is currently active. Any week overlapping a pause range contributes €0 to the balance (streak frozen, not reset) — attendance logging is unaffected. Closed rows are kept permanently so past-paused weeks stay excluded even after resuming. This is distinct from the (not yet built) "Days off" idea in `TODO.md`, which would excuse individual days within a week's count rather than freezing a whole week.
 
 ## API endpoints
 
@@ -50,15 +53,18 @@ All at `api.php?action=X`. POST requires `Content-Type: application/json`.
 | delete_day   | POST   | Yes         | Soft delete                    |
 | withdraw     | POST   | Yes         | Deducts from balance           |
 | verify_pin   | POST   | No          | Returns `{ok: true}` on success|
+| pause_balance  | POST | Yes         | Freezes balance scoring, optional `reason` |
+| resume_balance | POST | Yes         | Ends the active pause           |
 
 ## Frontend architecture
 
 Single IIFE in `app.js`. Key functions:
 
 - `loadStatus()` — fetches API and calls all render functions
-- `renderJar(balance)` — updates balance card number + colour class
+- `renderJar(balance, paused)` — updates balance card number + colour class (`paused` shows a muted state)
 - `renderCurrentWeek(week, today)` — updates ring, dots, label
 - `renderStreak(streak)` — updates streak number
+- `renderPauseState(reason)` — shows the "Saldo em pausa" message in place of the projection when paused
 - `renderFab(week, today)` — enables/disables the log-today FAB
 - `handleFabClick()` — PIN flow → `logToday()` if authenticated
 
@@ -89,6 +95,8 @@ Portuguese format: `0,00 €` (value, then non-breaking space, then sign). Use `
 - `#streak-count` — streak number
 - `#fab-log` — floating action button
 - `#modal-overlay` — single overlay for all modals
+- `#settings-pause-toggle` — "Saldo em pausa" checkbox in Settings
+- `#settings-pause-reason` — free-text pause reason input
 
 ## Deployment
 

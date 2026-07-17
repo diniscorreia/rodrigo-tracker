@@ -148,11 +148,15 @@
         state.lastRefresh = Date.now();
         if (dot) { dot.classList.remove('loading', 'stale'); }
 
-        renderJar(res.data.balance);
+        renderJar(res.data.balance, res.data.balance_paused);
         const clientToday = formatISODate(new Date());
         renderCurrentWeek(res.data.current_week, clientToday);
         renderStreak(res.data.streak);
-        renderProjection(res.data.projection);
+        if (res.data.balance_paused) {
+            renderPauseState(res.data.pause_reason);
+        } else {
+            renderProjection(res.data.projection);
+        }
         renderFab(res.data.current_week, clientToday);
         state.challenge = res.data.challenge;
     }
@@ -170,11 +174,13 @@
     // =========================================================================
     // Jar
     // =========================================================================
-    function renderJar(balance) {
+    function renderJar(balance, paused) {
         const amount = $('#jar-amount');
         amount.textContent = formatEuro(balance);
         amount.className = 'jar-amount';
-        if (balance > 0) {
+        if (paused) {
+            amount.classList.add('paused');
+        } else if (balance > 0) {
             amount.classList.add('positive');
         } else if (balance < 0) {
             amount.classList.add('negative');
@@ -337,6 +343,14 @@
         }
     }
 
+    function renderPauseState(reason) {
+        const msgEl = $('#projection-message');
+        if (!msgEl) return;
+        msgEl.hidden = false;
+        msgEl.textContent = reason ? `Saldo em pausa: ${reason}` : 'Saldo em pausa.';
+        msgEl.className = 'projection-text paused';
+    }
+
     // =========================================================================
     // Actions
     // =========================================================================
@@ -486,8 +500,15 @@
         $('#settings-challenge-article').value = ch.article  || '';
         $('#settings-challenge-end').value     = ch.end_date || '';
         $('#settings-new-pin').value = '';
-        $('#settings-msg').hidden     = true;
-        $('#settings-pin-msg').hidden = true;
+
+        const paused = !!(state.status && state.status.balance_paused);
+        $('#settings-pause-toggle').checked = paused;
+        $('#settings-pause-reason').value = (state.status && state.status.pause_reason) || '';
+        $('#settings-pause-reason-wrap').hidden = !paused;
+
+        $('#settings-msg').hidden       = true;
+        $('#settings-pin-msg').hidden   = true;
+        $('#settings-pause-msg').hidden = true;
         $('#modal-settings').hidden = false;
     }
 
@@ -499,6 +520,31 @@
             challenge_name:     $('#settings-challenge-name').value.trim(),
             challenge_article:  $('#settings-challenge-article').value.trim(),
         });
+        msgEl.textContent = res.ok ? res.message : res.error;
+        msgEl.className   = res.ok ? 'success-text' : 'error-text';
+        msgEl.hidden = false;
+        if (res.ok) loadStatus();
+    }
+
+    async function submitPauseToggle() {
+        const msgEl = $('#settings-pause-msg');
+        msgEl.hidden = true;
+
+        const wantsPaused = $('#settings-pause-toggle').checked;
+        const currentlyPaused = !!(state.status && state.status.balance_paused);
+
+        let res;
+        if (wantsPaused && !currentlyPaused) {
+            res = await apiPost('pause_balance', { reason: $('#settings-pause-reason').value.trim() });
+        } else if (!wantsPaused && currentlyPaused) {
+            res = await apiPost('resume_balance', {});
+        } else {
+            msgEl.textContent = 'Sem alterações.';
+            msgEl.className = 'success-text';
+            msgEl.hidden = false;
+            return;
+        }
+
         msgEl.textContent = res.ok ? res.message : res.error;
         msgEl.className   = res.ok ? 'success-text' : 'error-text';
         msgEl.hidden = false;
@@ -572,7 +618,7 @@
 
         weeks.forEach((week) => {
             const el = document.createElement('div');
-            const cls = week.day_count >= 5 ? 'good' : week.day_count === 4 ? 'neutral' : 'bad';
+            const cls = week.paused ? 'paused' : (week.day_count >= 5 ? 'good' : week.day_count === 4 ? 'neutral' : 'bad');
             el.className = `history-week ${cls}`;
 
             const totalContrib = week.contribution + (week.bonus || 0);
@@ -592,9 +638,14 @@
                 detailHtml += `<div class="history-day" style="color: var(--accent-gold)"><span>Bónus de streak!</span><span>+${formatEuro(week.bonus)}</span></div>`;
             }
 
+            let datesLabel = formatDateRange(week.week_start, week.week_end);
+            if (week.paused) {
+                datesLabel += week.pause_reason ? ` · Pausa: ${escapeHtml(week.pause_reason)}` : ' · Pausa';
+            }
+
             el.innerHTML = `
                 <div class="history-week-header">
-                    <span class="history-week-dates">${formatDateRange(week.week_start, week.week_end)}</span>
+                    <span class="history-week-dates">${datesLabel}</span>
                     <span class="history-week-result ${resultCls}">${sign}${formatEuro(totalContrib)}</span>
                 </div>
                 <div class="history-week-days">${week.day_count} dia${week.day_count !== 1 ? 's' : ''}</div>
@@ -674,6 +725,10 @@
         $('#settings-btn').addEventListener('click', openSettingsModal);
         $('#settings-save').addEventListener('click', submitSettings);
         $('#settings-pin-save').addEventListener('click', submitChangePin);
+        $('#settings-pause-toggle').addEventListener('change', (e) => {
+            $('#settings-pause-reason-wrap').hidden = !e.target.checked;
+        });
+        $('#settings-pause-save').addEventListener('click', submitPauseToggle);
 
         // Modal cancels
         $$('.modal-cancel').forEach((btn) => {

@@ -368,6 +368,11 @@ h3 {
     color: var(--text-primary);
 }
 
+#jar-amount.paused {
+    color: var(--text-muted);
+    text-shadow: none;
+}
+
 #jar-label {
     font-size: 0.85rem;
     color: var(--text-muted);
@@ -551,6 +556,12 @@ h3 {
     opacity: 0.6;
 }
 
+.projection-text.paused {
+    color: var(--text-muted);
+    opacity: 0.85;
+    font-weight: 600;
+}
+
 /* ---------- Settings modal ---------- */
 
 .settings-section {
@@ -578,6 +589,29 @@ h3 {
     border: none;
     border-top: 1px solid var(--bg-surface);
     margin: 1.25rem 0;
+}
+
+.settings-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    text-transform: none;
+    letter-spacing: normal;
+    margin-top: 0.5rem;
+    cursor: pointer;
+}
+
+#settings-pause-toggle {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background: none;
+    border: none;
+    padding: 0;
+    accent-color: var(--accent-gold);
+    cursor: pointer;
 }
 
 .success-text {
@@ -628,6 +662,11 @@ h3 {
 
 .history-week.bad {
     border-left-color: var(--accent-red);
+}
+
+.history-week.paused {
+    border-left-color: var(--text-muted);
+    opacity: 0.7;
 }
 
 .history-week-header {

@@ -54,6 +54,16 @@ function initDatabase(): PDO
         created_at TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%S', 'now'))
     )");
 
+    $db->exec("CREATE TABLE IF NOT EXISTS balance_pauses (
+        id         INTEGER PRIMARY KEY AUTOINCREMENT,
+        start_date TEXT    NOT NULL,
+        end_date   TEXT    DEFAULT NULL,
+        reason     TEXT    NOT NULL DEFAULT '',
+        created_at TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%S', 'now'))
+    )");
+
+    $db->exec("CREATE INDEX IF NOT EXISTS idx_balance_pauses_end_date ON balance_pauses(end_date)");
+
     $db->exec("CREATE TABLE IF NOT EXISTS settings (
         key   TEXT PRIMARY KEY,
         value TEXT NOT NULL
@@ -110,6 +120,34 @@ function getSetting(PDO $db, string $key): ?string
     $stmt->execute([$key]);
     $val = $stmt->fetchColumn();
     return $val === false ? null : $val;
+}
+
+// ---------------------------------------------------------------------------
+// Balance pause helpers
+// ---------------------------------------------------------------------------
+
+function getActivePause(PDO $db): ?array
+{
+    $stmt = $db->query("SELECT * FROM balance_pauses WHERE end_date IS NULL ORDER BY id DESC LIMIT 1");
+    $row = $stmt->fetch();
+    return $row ?: null;
+}
+
+function getAllPauses(PDO $db): array
+{
+    $stmt = $db->query("SELECT * FROM balance_pauses ORDER BY start_date ASC");
+    return $stmt->fetchAll();
+}
+
+function findOverlappingPause(string $weekStart, string $weekEnd, array $pauses): ?array
+{
+    foreach ($pauses as $p) {
+        $pEnd = $p['end_date'];
+        if ($p['start_date'] <= $weekEnd && ($pEnd === null || $pEnd >= $weekStart)) {
+            return $p;
+        }
+    }
+    return null;
 }
 
 // ---------------------------------------------------------------------------
@@ -277,6 +315,8 @@ function calculateBalance(PDO $db): array
     $stmt = $db->query("SELECT COALESCE(SUM(amount), 0) FROM withdrawals");
     $totalWithdrawn = (float)$stmt->fetchColumn();
 
+    $pauses = getAllPauses($db);
+
     // Group logs by week Monday
     $weekBuckets = [];
     foreach ($logs as $log) {
@@ -313,21 +353,30 @@ function calculateBalance(PDO $db): array
         $days = $weekBuckets[$weekKey] ?? [];
         $dayCount = count($days);
 
-        $contribution = evaluateWeek($dayCount);
-        $balance += $contribution;
+        $overlappingPause = findOverlappingPause($weekKey, $weekEnd, $pauses);
+        $isPaused = $overlappingPause !== null;
 
-        // Streak
-        if ($dayCount >= 5) {
-            $streak++;
+        if ($isPaused) {
+            $contribution = 0.0;
+            $bonus = 0.0;
+            // streak intentionally frozen — neither incremented nor reset
         } else {
-            $streak = 0;
-        }
+            $contribution = evaluateWeek($dayCount);
+            $balance += $contribution;
 
-        // Bonus every 4th consecutive good week
-        $bonus = 0.0;
-        if ($streak > 0 && $streak % 4 === 0) {
-            $bonus = 1.00;
-            $balance += $bonus;
+            // Streak
+            if ($dayCount >= 5) {
+                $streak++;
+            } else {
+                $streak = 0;
+            }
+
+            // Bonus every 4th consecutive good week
+            $bonus = 0.0;
+            if ($streak > 0 && $streak % 4 === 0) {
+                $bonus = 1.00;
+                $balance += $bonus;
+            }
         }
 
         $weeksDetail[] = [
@@ -337,6 +386,8 @@ function calculateBalance(PDO $db): array
             'day_count'    => $dayCount,
             'contribution' => $contribution,
             'bonus'        => $bonus,
+            'paused'       => $isPaused,
+            'pause_reason' => $overlappingPause['reason'] ?? null,
         ];
 
         $weekStart->modify('+7 days');
@@ -391,18 +442,16 @@ function calculateProjection(float $currentBalance, int $currentStreak, array $c
         return ['visible' => false];
     }
 
-    // Need at least one completed week to make a meaningful projection
-    if (empty($completedWeeks)) {
+    // Need at least one scorable (non-paused) completed week to make a meaningful projection
+    $scorableWeeks = array_values(array_filter($completedWeeks, fn($w) => empty($w['paused'])));
+
+    if (empty($scorableWeeks)) {
         return ['visible' => false];
     }
 
-    // Average days per week from completed weeks
-    if (!empty($completedWeeks)) {
-        $totalDays = array_sum(array_column($completedWeeks, 'day_count'));
-        $avgDaysPerWeek = $totalDays / count($completedWeeks);
-    } else {
-        $avgDaysPerWeek = 0;
-    }
+    // Average days per week from scorable completed weeks
+    $totalDays = array_sum(array_column($scorableWeeks, 'day_count'));
+    $avgDaysPerWeek = $totalDays / count($scorableWeeks);
 
     $projectedDays = (int)round($avgDaysPerWeek);
     $weeklyContribution = evaluateWeek($projectedDays);

@@ -161,6 +161,24 @@ $_baseUrl = $_proto . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
                 <hr class="settings-divider">
 
                 <div class="settings-section">
+                    <h4 class="settings-section-title">Saldo</h4>
+                    <label class="settings-checkbox-label" for="settings-pause-toggle">
+                        <input type="checkbox" id="settings-pause-toggle">
+                        Saldo em pausa
+                    </label>
+                    <div id="settings-pause-reason-wrap" hidden>
+                        <label for="settings-pause-reason">Motivo <span class="settings-hint">opcional</span></label>
+                        <input type="text" id="settings-pause-reason" maxlength="200" placeholder="Ex: Férias, Meta atingida, Doente">
+                    </div>
+                    <div class="modal-buttons">
+                        <button class="btn btn-primary" id="settings-pause-save">Guardar</button>
+                    </div>
+                    <p id="settings-pause-msg" class="success-text" hidden></p>
+                </div>
+
+                <hr class="settings-divider">
+
+                <div class="settings-section">
                     <h4 class="settings-section-title">PIN</h4>
                     <label for="settings-new-pin">Novo PIN</label>
                     <input type="password" id="settings-new-pin" maxlength="6" inputmode="numeric" placeholder="****" autocomplete="new-password" data-1p-ignore="true" data-lpignore="true" data-form-type="other">

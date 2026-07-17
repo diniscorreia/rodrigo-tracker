@@ -37,6 +37,8 @@ try {
         case 'verify_pin':      requireMethod('POST'); handleVerifyPin($db);      break;
         case 'update_settings': requireMethod('POST'); handleUpdateSettings($db); break;
         case 'change_pin':      requireMethod('POST'); handleChangePin($db);      break;
+        case 'pause_balance':   requireMethod('POST'); handlePauseBalance($db);   break;
+        case 'resume_balance':  requireMethod('POST'); handleResumeBalance($db);  break;
         default:           jsonError('Ação desconhecida.', 404);         break;
     }
 } catch (PDOException $e) {
@@ -56,17 +58,20 @@ function handleStatus(PDO $db): void
     $challengeEnd     = getSetting($db, 'challenge_end_date') ?? '2025-05-30';
     $challengeName    = getSetting($db, 'challenge_name');
     $challengeArticle = getSetting($db, 'challenge_article');
+    $activePause      = getActivePause($db);
 
     // For projection, pass completed weeks in chronological order
     $weeksChronological = array_reverse($result['weeks']);
-    $projection = calculateProjection(
-        $result['balance'],
-        $result['streak'],
-        $weeksChronological,
-        $challengeEnd,
-        $challengeName,
-        $challengeArticle
-    );
+    $projection = $activePause !== null
+        ? ['visible' => false]
+        : calculateProjection(
+              $result['balance'],
+              $result['streak'],
+              $weeksChronological,
+              $challengeEnd,
+              $challengeName,
+              $challengeArticle
+          );
 
     $today = date('Y-m-d');
 
@@ -81,6 +86,9 @@ function handleStatus(PDO $db): void
             'name'     => $challengeName ?? '',
             'article'  => $challengeArticle ?? '',
         ],
+        'balance_paused'   => $activePause !== null,
+        'pause_reason'     => $activePause['reason']     ?? null,
+        'pause_started'    => $activePause['start_date'] ?? null,
         'today'            => $today,
     ]);
 }
@@ -238,4 +246,40 @@ function handleChangePin(PDO $db): void
        ->execute([$hash]);
 
     jsonMessage('PIN alterado com sucesso.');
+}
+
+function handlePauseBalance(PDO $db): void
+{
+    $body = getJsonBody();
+    requirePin($db, $body);
+
+    if (getActivePause($db) !== null) {
+        jsonError('Saldo já está em pausa.', 409);
+    }
+
+    $reason = trim((string)($body['reason'] ?? ''));
+    if (mb_strlen($reason) > 200) {
+        $reason = mb_substr($reason, 0, 200);
+    }
+
+    $db->prepare("INSERT INTO balance_pauses (start_date, reason) VALUES (?, ?)")
+       ->execute([date('Y-m-d'), $reason]);
+
+    jsonMessage('Saldo em pausa.');
+}
+
+function handleResumeBalance(PDO $db): void
+{
+    $body = getJsonBody();
+    requirePin($db, $body);
+
+    $active = getActivePause($db);
+    if ($active === null) {
+        jsonError('Saldo não está em pausa.', 409);
+    }
+
+    $db->prepare("UPDATE balance_pauses SET end_date = ? WHERE id = ?")
+       ->execute([date('Y-m-d'), $active['id']]);
+
+    jsonMessage('Saldo retomado.');
 }
