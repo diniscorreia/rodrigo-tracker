@@ -356,23 +356,22 @@ function calculateBalance(PDO $db): array
         $overlappingPause = findOverlappingPause($weekKey, $weekEnd, $pauses);
         $isPaused = $overlappingPause !== null;
 
+        // Streak updates regardless of pause state — attendance still counts
+        if ($dayCount >= 5) {
+            $streak++;
+        } else {
+            $streak = 0;
+        }
+
+        $bonus = 0.0;
         if ($isPaused) {
             $contribution = 0.0;
-            $bonus = 0.0;
-            // streak intentionally frozen — neither incremented nor reset
+            // bonus stays 0 — balance itself remains frozen during a pause
         } else {
             $contribution = evaluateWeek($dayCount);
             $balance += $contribution;
 
-            // Streak
-            if ($dayCount >= 5) {
-                $streak++;
-            } else {
-                $streak = 0;
-            }
-
             // Bonus every 4th consecutive good week
-            $bonus = 0.0;
             if ($streak > 0 && $streak % 4 === 0) {
                 $bonus = 1.00;
                 $balance += $bonus;

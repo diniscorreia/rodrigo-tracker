@@ -39,7 +39,7 @@ balance_pauses (id, start_date, end_date, reason, created_at)
 
 Gym logs use soft deletes (`deleted_at`).
 
-`balance_pauses`: `end_date IS NULL` means the pause is currently active. Any week overlapping a pause range contributes €0 to the balance (streak frozen, not reset) — attendance logging is unaffected. Closed rows are kept permanently so past-paused weeks stay excluded even after resuming. This is distinct from the (not yet built) "Days off" idea in `TODO.md`, which would excuse individual days within a week's count rather than freezing a whole week.
+`balance_pauses`: `end_date IS NULL` means the pause is currently active. Any week overlapping a pause range contributes €0 to the balance (no contribution, no 4-week bonus) — but the streak counter keeps updating normally from real attendance, so consistency is still rewarded/reset during a pause. Attendance logging is unaffected. Closed rows are kept permanently so past-paused weeks stay excluded even after resuming. This is distinct from the (not yet built) "Days off" idea in `TODO.md`, which would excuse individual days within a week's count rather than freezing a whole week.
 
 ## API endpoints
 
