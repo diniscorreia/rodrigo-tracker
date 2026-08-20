@@ -217,8 +217,6 @@ function validateDate(string $date): bool
     $parts = explode('-', $date);
     if (!checkdate((int)$parts[1], (int)$parts[2], (int)$parts[0])) return false;
     if ($date > date('Y-m-d')) return false;
-    $lastMonday = getWeekMonday(date('Y-m-d', strtotime('-7 days')));
-    if ($date < $lastMonday) return false;
     return true;
 }
 

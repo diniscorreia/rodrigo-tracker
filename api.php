@@ -124,7 +124,7 @@ function handleLogDay(PDO $db): void
 
     $date = trim($body['date'] ?? date('Y-m-d'));
     if (!validateDate($date)) {
-        jsonError('Data inválida. Deve ser nos últimos 7 dias e no formato AAAA-MM-DD.', 400);
+        jsonError('Data inválida. Não pode ser no futuro e deve estar no formato AAAA-MM-DD.', 400);
     }
 
     try {

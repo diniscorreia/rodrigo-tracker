@@ -389,15 +389,8 @@
         const input = $('#past-date-input');
         const errEl = $('#past-date-error');
 
-        const today = new Date();
-        const dow = today.getDay(); // 0=Sun, 1=Mon … 6=Sat
-        const daysFromMonday = dow === 0 ? 6 : dow - 1;
-        const thisMonday = new Date(today);
-        thisMonday.setDate(today.getDate() - daysFromMonday);
-        const lastMonday = new Date(thisMonday);
-        lastMonday.setDate(thisMonday.getDate() - 7);
-        input.max = formatISODate(today);
-        input.min = formatISODate(lastMonday);
+        input.max = formatISODate(new Date());
+        input.removeAttribute('min');
         input.value = '';
         errEl.hidden = true;
 

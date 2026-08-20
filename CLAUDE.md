@@ -49,7 +49,7 @@ All at `api.php?action=X`. POST requires `Content-Type: application/json`.
 |--------------|--------|-------------|--------------------------------|
 | status       | GET    | No          | Balance, streak, current week  |
 | history      | GET    | No          | Paginated past weeks           |
-| log_day      | POST   | Yes         | Defaults to today, 7-day window|
+| log_day      | POST   | Yes         | Defaults to today, any past date allowed|
 | delete_day   | POST   | Yes         | Soft delete                    |
 | withdraw     | POST   | Yes         | Deducts from balance           |
 | verify_pin   | POST   | No          | Returns `{ok: true}` on success|
